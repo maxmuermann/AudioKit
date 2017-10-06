@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>DefaultCompletionName</key>
+	<string>File</string>
+	<key>Description</key>
+	<string>This generates a new AudioKit node set up for DSP processing. It consists of an AKNode (Swift), AudioUnit (Objective-C), DSP Kernel (C) and a Faust .dsp file, if you wish to generate your DSP code with Faust.</string>
+	<key>Kind</key>
+	<string>Xcode.IDEKit.TextSubstitutionFileTemplateKind</string>
+	<key>Options</key>
+	<array>
+		<dict>
+			<key>Description</key>
+			<string>The name of the node to create (will be prefixed with AK)</string>
+			<key>Identifier</key>
+			<string>nodeName</string>
+			<key>Name</key>
+			<string>New Node Name:</string>
+			<key>NotPersisted</key>
+			<true/>
+			<key>Required</key>
+			<true/>
+			<key>Type</key>
+			<string>text</string>
+		</dict>
+		<dict>
+			<key>Description</key>
+			<string>The AudioUnit component code (4 letters only!)</string>
+			<key>Identifier</key>
+			<string>componentCode</string>
+			<key>Name</key>
+			<string>New Component Code:</string>
+			<key>NotPersisted</key>
+			<true/>
+			<key>Required</key>
+			<true/>
+			<key>Type</key>
+			<string>text</string>
+		</dict>
+	</array>
+	<key>Platforms</key>
+	<array>
+		<string>com.apple.platform.iphoneos</string>
+	</array>
+	<key>SortOrder</key>
+	<string>7</string>
+	<key>Summary</key>
+	<string>This generates a new AudioKit DSP node with optional Faust DSP processing code.</string>
+</dict>
+</plist>
