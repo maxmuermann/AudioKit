@@ -20,9 +20,23 @@ standardKernelPassthroughs()
 
     standardSetup(___VARIABLE_nodeName___) // for generator nodes, use generatorSetup(___FILEBASENAMEASIDENTIFIER___) instead
 
+    // automatically generate AudioUnit parameters from Faust UI definition
+    NSMutableArray* auParameters = [[NSMutableArray alloc] init];
+    int i = 0;
+    for(AKFaustParameter* fParam : _kernel.ui->parameters) {
+        AUParameter* param = [AUParameter parameter: [[NSString stringWithUTF8String: fParam->name] stringByReplacingOccurrencesOfString:@"." withString:@"_"] // parameter identifiers are not allowed to contain periods.
+                                               name: [NSString stringWithUTF8String: fParam->name]
+                                            address: i++
+                                                min: fParam->min
+                                                max: fParam->max
+                                               unit:kAudioUnitParameterUnit_Generic];
+
+        [auParameters addObject:param];
+    }
+
     // Create the parameter tree.
-    _parameterTree = [AUParameterTree tree:@[
-                                             ]];
+    _parameterTree = [AUParameterTree tree: auParameters];
+
 
     parameterTreeBlock(___VARIABLE_nodeName___)
 }

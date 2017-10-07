@@ -11,25 +11,21 @@
 #import "AKDSPKernel.hpp"
 #import "Distortion1.hpp"
 
-enum {
-    param0Address = 0,
-};
 
 class AKDistortion1DSPKernel : public AKDSPKernel, public AKBuffered {
 public:
     // MARK: Member Functions
 
-    AKDistortion1DSPKernel() {}
+    AKDistortion1DSPKernel() {
+        dsp = new Distortion1DSP();
+        ui = new AKFaustUI();
+        dsp->buildUserInterface(ui);
+    }
 
     void init(int _channels, double _sampleRate) override {
         AKDSPKernel::init(_channels, _sampleRate);
 
-        dsp = new Distortion1DSP();
         dsp->init(_sampleRate);
-
-        #warning hook up all your AU parameters to the DSP parameters
-        //dsp->hSlider0 = 1.0;
-        param0Ramper.init();
     }
 
     void start() {
@@ -46,43 +42,47 @@ public:
 
     void reset() {
         resetted = true;
-        param0Ramper.reset();
-    }
-
-    void setParam0(float value) {
-        param0 = clamp(value, 0.0f, 1.0f);
-        param0Ramper.setImmediate(param0);
+        for(AKFaustParameter* param : ui->parameters) {
+            if (param->ramper) {
+                param->ramper->reset();
+            }
+        }
     }
 
     void setParameter(AUParameterAddress address, AUValue value) {
-        switch (address) {
-            case param0Address:
-                param0Ramper.setUIValue(clamp(value, 0.0f, 1.0f));
-                break;
+        AKFaustParameter * param = ui->parameters[address];
+        float clampedValue = clamp(value, param->min, param->max);
+        if (param->ramper) {
+            param->ramper->setImmediate(clampedValue);
+        } else {
+            *(param->zone) = clampedValue;
         }
     }
 
     AUValue getParameter(AUParameterAddress address) {
-        switch (address) {
-            case param0Address:
-                return param0Ramper.getUIValue();
-            default:
-                return 0.0f;
+        AKFaustParameter * param = ui->parameters[address];
+        if (param->ramper) {
+            return param->ramper->getUIValue();
+        } else {
+            return *(param->zone);
         }
     }
 
     void startRamp(AUParameterAddress address, AUValue value, AUAudioFrameCount duration) override {
-        switch (address) {
-            case param0Address:
-                param0Ramper.startRamp(clamp(value, 0.0f, 1.0f), duration);
-                break;
+        AKFaustParameter * param = ui->parameters[address];
+        float clampedValue = clamp(value, param->min, param->max);
+        if (param->ramper) {
+            return param->ramper->startRamp(clampedValue, duration);
         }
     }
 
     void process(AUAudioFrameCount frameCount, AUAudioFrameCount bufferOffset) override {
-
-        #warning get all current parameter values
-        //dsp->hSlider0 = param0Ramper.getAndStep()
+        // set all ramped parameters
+        for (AKFaustParameter* param : ui->parameters) {
+            if (param->ramper) {
+                *(param->zone) = param->ramper->getAndStep();
+            }
+        }
 
         // process up to two channels, this will work for mono and stereo nodes
         float *tmpin[2];
@@ -115,5 +115,6 @@ public:
 
     bool started = true;
     bool resetted = false;
-    ParameterRamper param0Ramper = 1.0;
+
+    AKFaustUI* ui;
 };

@@ -6,8 +6,11 @@ Code generated with Faust 2.4.2 (http://faust.grame.fr)
 Compilation options: -scal -ftz 0
 ------------------------------------------------------------ */
 
-#ifndef Chorus_h
-#define Chorus_h
+#ifndef  __ChorusDSP_H__
+#define  __ChorusDSP_H__
+
+
+
 
 #include "GUI.hpp"
 #include <math.h>
@@ -15,9 +18,13 @@ Compilation options: -scal -ftz 0
 #define max(a,b) ((a < b) ? b : a)
 #define min(a,b) ((a < b) ? a : b)
 
+
 #ifndef FAUSTFLOAT
 #define FAUSTFLOAT float
-#endif
+#endif  
+
+#include <math.h>
+
 
 class ChorusDSPSIG0 {
 	
@@ -96,9 +103,9 @@ class ChorusDSP : public dsp {
 	
  private:
 	
+	FAUSTFLOAT fHslider0;
 	int IOTA;
 	float fVec0[65536];
-	FAUSTFLOAT fHslider0;
 	int fSamplingFreq;
 	float fConst0;
 	float fConst1;
@@ -283,7 +290,7 @@ class ChorusDSP : public dsp {
 			int iTemp3 = int(fTemp2);
 			float fTemp4 = (fConst1 * (fRec0[0] * ((fSlow2 * (((fTemp2 + (1.0f - fTemp1)) * ftbl0ChorusDSPSIG0[(iTemp3 & 65535)]) + ((fTemp1 - fTemp2) * ftbl0ChorusDSPSIG0[((iTemp3 + 1) & 65535)]))) + 1.0f)));
 			int iTemp5 = int(fTemp4);
-			output0[i] = FAUSTFLOAT((fTemp0 + (fSlow0 * ((fVec0[((IOTA - (iTemp5 & 65535)) & 65535)] * (float(iTemp5) + (1.0f - fTemp4))) + ((fTemp4 - float(iTemp5)) * fVec0[((IOTA - ((iTemp5 + 1) & 65535)) & 65535)])))));
+			output0[i] = FAUSTFLOAT(((fSlow0 * ((fVec0[((IOTA - (iTemp5 & 65535)) & 65535)] * (float(iTemp5) + (1.0f - fTemp4))) + ((fTemp4 - float(iTemp5)) * fVec0[((IOTA - ((iTemp5 + 1) & 65535)) & 65535)]))) + fTemp0));
 			float fTemp6 = float(input1[i]);
 			fVec1[(IOTA & 65535)] = fTemp6;
 			float fTemp7 = (65536.0f * (fRec1[0] + (0.25f - floorf((fRec1[0] + 0.25f)))));
@@ -302,5 +309,6 @@ class ChorusDSP : public dsp {
 
 	
 };
+
 
 #endif

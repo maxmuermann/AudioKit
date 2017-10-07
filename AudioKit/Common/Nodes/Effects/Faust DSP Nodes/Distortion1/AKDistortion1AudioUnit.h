@@ -10,5 +10,4 @@
 #import "AKAudioUnit.h"
 
 @interface AKDistortion1AudioUnit : AKAudioUnit
-@property (nonatomic) float param0;
 @end

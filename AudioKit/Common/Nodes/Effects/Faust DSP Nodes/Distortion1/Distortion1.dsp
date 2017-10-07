@@ -13,15 +13,15 @@ import("guitarix.lib");
 //----------distortion---------
 
 //-speaker emulation
-sbp1    = vslider("low_freq[name:low freq][tooltip:low-freq cutoff Hz]",130,20,1000,10);
-sbp2    = vslider("high_freq[name:high freq][tooltip:high-freq cutoff Hz]",5000,1000,12000,10);
-switch1 = checkbox("on_off[name:low highcutoff]");
+sbp1    = vslider("speaker.low_freq[name:low freq][tooltip:low-freq cutoff Hz]",130,20,1000,10);
+sbp2    = vslider("speaker.high_freq[name:high freq][tooltip:high-freq cutoff Hz]",5000,1000,12000,10);
+switch1 = checkbox("speaker.on_off[name:low highcutoff]");
 sbp = hgroup("low_highcutoff", bypass(switch1, +(anti_denormal_ac) : speakerbp(sbp1,sbp2)));
 
 //-low and highpass
-lowpassfreq  = nentry("low_freq[name:low freq]", 5000, 20, 12000, 10);
-highpassfreq = nentry("high_freq[name:high freq]", 130, 20, 7040, 10);
-switch       = checkbox("on_off[name:low highpass]");
+lowpassfreq  = nentry("filter.low_freq[name:low freq]", 5000, 20, 12000, 10);
+highpassfreq = nentry("filter.high_freq[name:high freq]", 130, 20, 7040, 10);
+switch       = checkbox("filter.on_off[name:low highpass]");
 passo = +(anti_denormal_ac) : lowpass(1,lowpassfreq) : highpass(1,highpassfreq );
 pass = hgroup("low_highpass", bypass(switch, passo));
 

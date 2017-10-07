@@ -2,7 +2,7 @@
 //  AKChorus.swift
 //  AudioKit
 //
-//  Created by Max Muermann on 6/10/17.
+//  Created by Max Muermann on 7/10/17.
 //  Copyright © 2017 AudioKit. All rights reserved.
 //
 
@@ -15,27 +15,10 @@ open class AKChorus: AKNode, AKToggleable, AKComponent, AKInput {
     private var internalAU: AKAudioUnitType?
     private var token: AUParameterObserverToken?
 
-    fileprivate var param0Parameter: AUParameter?
-
     /// Ramp Time represents the speed at which parameters are allowed to change
     @objc open dynamic var rampTime: Double = AKSettings.rampTime {
         willSet {
             internalAU?.rampTime = rampTime
-        }
-    }
-
-    /// Parameters
-    @objc open dynamic var param0: Double = 1.0 {
-        willSet {
-            if param0 != newValue {
-                if internalAU?.isSetUp() ?? false {
-                    if let existingToken = token {
-                        param0Parameter?.setValue(Float(newValue), originator: existingToken)
-                    }
-                } else {
-                    internalAU?.param0 = Float(newValue)
-                }
-            }
         }
     }
 
@@ -50,10 +33,7 @@ open class AKChorus: AKNode, AKToggleable, AKComponent, AKInput {
     ///
     /// - Parameters:
     ///   - input: Input node to process
-    public init(_ input: AKNode? = nil, param0: Double = 1.0) {
-
-        self.param0 = param0
-
+    public init(_ input: AKNode? = nil) {
         _Self.register()
 
         super.init()
@@ -70,8 +50,6 @@ open class AKChorus: AKNode, AKToggleable, AKComponent, AKInput {
             return
         }
 
-        param0Parameter = tree["Parameter 0"]
-
         token = tree.token(byAddingParameterObserver: { [weak self] _, _ in
 
             guard let _ = self else {
@@ -83,9 +61,19 @@ open class AKChorus: AKNode, AKToggleable, AKComponent, AKInput {
                 // value observing, but if you need to, this is where that goes.
             }
         })
-
-        internalAU?.param0 = Float(param0)
     }
+
+    // MARK: Parameters
+    @objc open func getParameter(_ name: String)->AUParameter? {
+        return internalAU?.parameterTree?[name]
+    }
+
+    @objc open func setParameter(_ name: String, to value: Float) {
+        if let param = getParameter(name) {
+            param.setValue(value, originator: token)
+        }
+    }
+
 
     // MARK: - Control
 

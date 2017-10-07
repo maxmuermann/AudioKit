@@ -10,10 +10,13 @@
 #define GUI_hpp
 
 #include <stdio.h>
-#include <map>
+#include <vector>
 #include <AudioToolbox/AUParameters.h>
 
-typedef uint64_t AUParameterAddress;
+typedef uint32_t AUAudioFrameCount;
+
+#include "ParameterRamper.hpp"
+
 
 class UI {
 public:
@@ -34,15 +37,37 @@ public:
     virtual void declare(float* zone, const char* name, const char* value) = 0;
 };
 
-struct AKFaustParameter {
-    //
+class AKFaustParameter {
+public:
+    const char* name;
+    float* zone;
+    float init, min, max, step;
+    ParameterRamper* ramper;
 };
 
 class AKFaustUI: public UI {
+public:
     ~AKFaustUI();
+    virtual void addButton(const char* label, float* zone);
+    virtual void addCheckButton(const char* label, float* zone);
+    virtual void addVerticalSlider(const char* label, float* zone, float init, float min, float max, float step);
+    virtual void addHorizontalSlider(const char* label, float* zone, float init, float min, float max, float step);
+    virtual void addNumEntry(const char* label, float* zone, float init, float min, float max, float step);
+
+    virtual void addHorizontalBargraph(const char* label, float* zone, float min, float max) {}
+    virtual void addVerticalBargraph(const char* label, float* zone, float min, float max) {}
+    virtual void openTabBox(const char* label) {}
+    virtual void openHorizontalBox(const char* label) {}
+    virtual void openVerticalBox(const char* label) {}
+    virtual void closeBox() {}
+    virtual void declare(float* zone, const char* name, const char* value) {}
+
+    std::vector<AKFaustParameter*> parameters;
 
 private:
-    std::map<AUParameterAddress, AKFaustParameter*> parameters;
+
+    virtual void addRampedParameter(const char* name, float* zone, float init, float min, float max, float step);
+    virtual AKFaustParameter* addDiscreteParameter(const char* name, float* zone, float init, float min, float max, float step);
 };
 
 class Meta {
