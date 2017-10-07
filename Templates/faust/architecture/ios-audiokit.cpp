@@ -2,7 +2,7 @@
 
 <<includeIntrinsic>>
 
-#include "CUI.h"
+#include "GUI.hpp"
 #include <math.h>
 
 #define max(a,b) ((a < b) ? b : a)

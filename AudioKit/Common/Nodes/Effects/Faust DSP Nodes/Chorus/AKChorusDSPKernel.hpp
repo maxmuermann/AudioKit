@@ -9,7 +9,7 @@
 #pragma once
 
 #import "AKDSPKernel.hpp"
-#import "Chorus.cpp"
+#import "Chorus.hpp"
 
 enum {
     param0Address = 0,

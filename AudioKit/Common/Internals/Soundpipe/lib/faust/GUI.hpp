@@ -11,37 +11,43 @@
 
 #include <stdio.h>
 #include <map>
-#include "AudioToolkit/AudioToolkit.h"
+#include <AudioToolbox/AUParameters.h>
+
+typedef uint64_t AUParameterAddress;
 
 class UI {
 public:
-    virtual void addButton(const char* label, float* zone);
-    virtual void addCheckButton(const char* label, float* zone);
-    virtual void addVerticalSlider(const char* label, float* zone, float init, float min, float max, float step);
-    virtual void addHorizontalSlider(const char* label, float* zone, float init, float min, float max, float step);
-    virtual void addNumEntry(const char* label, float* zone, float init, float min, float max, float step);
+    virtual void addButton(const char* label, float* zone) = 0;
+    virtual void addCheckButton(const char* label, float* zone) = 0;
+    virtual void addVerticalSlider(const char* label, float* zone, float init, float min, float max, float step) = 0;
+    virtual void addHorizontalSlider(const char* label, float* zone, float init, float min, float max, float step) = 0;
+    virtual void addNumEntry(const char* label, float* zone, float init, float min, float max, float step) = 0;
 
-    virtual void addHorizontalBargraph(const char* label, float* zone, float min, float max);
-    virtual void addVerticalBargraph(const char* label, float* zone, float min, float max);
+    virtual void addHorizontalBargraph(const char* label, float* zone, float min, float max) = 0;
+    virtual void addVerticalBargraph(const char* label, float* zone, float min, float max) = 0;
 
-    virtual void openTabBox(const char* label);
-    virtual void openHorizontalBox(const char* label);
-    virtual void openVerticalBox(const char* label);
-    virtual void closeBox();
+    virtual void openTabBox(const char* label) = 0;
+    virtual void openHorizontalBox(const char* label) = 0;
+    virtual void openVerticalBox(const char* label) = 0;
+    virtual void closeBox() = 0;
 
-    virtual void declare(float* zone, const char* name, const char* value);
+    virtual void declare(float* zone, const char* name, const char* value) = 0;
+};
+
+struct AKFaustParameter {
+    //
 };
 
 class AKFaustUI: public UI {
     ~AKFaustUI();
 
 private:
-    std::map<AUParameterAdress, AKFaustParameter*> parameters;
+    std::map<AUParameterAddress, AKFaustParameter*> parameters;
 };
 
 class Meta {
 public:
-    void declare(const char* name, const char* value);
+    virtual void declare(const char* name, const char* value) = 0;
 };
 
 class dsp {

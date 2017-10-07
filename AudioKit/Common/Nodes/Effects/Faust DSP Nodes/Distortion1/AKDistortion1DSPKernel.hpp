@@ -1,25 +1,30 @@
-//  ___FILEHEADER___
+//  
+//  AKDistortion1DSPKernel.hpp
+//  AudioKit
+//
+//  Created by Max Muermann on 7/10/17.
+//  Copyright © 2017 AudioKit. All rights reserved.
+//
 
 #pragma once
 
 #import "AKDSPKernel.hpp"
-#import "___VARIABLE_nodeName___.hpp"
+#import "Distortion1.hpp"
 
 enum {
     param0Address = 0,
 };
 
-class AK___VARIABLE_nodeName___DSPKernel : public AKDSPKernel, public AKBuffered {
+class AKDistortion1DSPKernel : public AKDSPKernel, public AKBuffered {
 public:
     // MARK: Member Functions
 
-    AK___VARIABLE_nodeName___DSPKernel() {}
+    AKDistortion1DSPKernel() {}
 
     void init(int _channels, double _sampleRate) override {
         AKDSPKernel::init(_channels, _sampleRate);
 
-        ___VARIABLE_nodeName___DSP::classInit(_sampleRate);
-        dsp = new ___VARIABLE_nodeName___DSP();
+        dsp = new Distortion1DSP();
         dsp->init(_sampleRate);
 
         #warning hook up all your AU parameters to the DSP parameters
@@ -103,7 +108,7 @@ public:
 
 private:
 
-    ___VARIABLE_nodeName___DSP *dsp;
+    Distortion1DSP *dsp;
     float param0 = 1.0;
 
 public:
