@@ -1,7 +1,7 @@
 #include <stdlib.h>
 
 #ifndef FAUSTFLOAT
-#define FAUSTFLOAT SPFLOAT
+#define FAUSTFLOAT float
 #endif
 
 typedef void (* addHorizontalSliderFun) (void* ui_interface, const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT min, FAUSTFLOAT max, FAUSTFLOAT step);

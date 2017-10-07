@@ -8,8 +8,8 @@
 
 #pragma once
 
-#import "AKSoundpipeKernel.hpp"
-#import "Chorus.h"
+#import "AKDSPKernel.hpp"
+#import "Chorus.cpp"
 
 enum {
     param0Address = 0,
@@ -25,10 +25,9 @@ public:
         AKDSPKernel::init(_channels, _sampleRate);
 
         #warning depending on faust-generated code, this may not be necessary. It is only used when the faust DSP contains class-level variables.
-        classInitChorusDSP(_sampleRate);
-
-        dsp = newChorusDSP();
-        initChorusDSP(dsp, _sampleRate);
+        ChorusDSP::classInit(_sampleRate);
+        dsp = new ChorusDSP();
+        dsp->init(_sampleRate);
 
         //dsp->hSlider0 = 1.0;
         param0Ramper.init();
@@ -43,7 +42,7 @@ public:
     }
 
     void destroy() {
-        deleteChorusDSP(dsp);
+        free(dsp);
     }
 
     void reset() {
@@ -96,7 +95,7 @@ public:
             }
         }
         if (started) {
-            computeChorusDSP(dsp, frameCount, tmpin, tmpout);
+            dsp->compute(frameCount, tmpin, tmpout);
         } else {
             tmpout[0] = tmpin[0];
             tmpout[1] = tmpin[1];
