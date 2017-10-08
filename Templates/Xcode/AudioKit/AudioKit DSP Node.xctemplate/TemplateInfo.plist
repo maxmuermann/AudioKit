@@ -5,7 +5,7 @@
 	<key>DefaultCompletionName</key>
 	<string>File</string>
 	<key>Description</key>
-	<string>This generates a new AudioKit node set up for DSP processing. It consists of an AKNode (Swift), AudioUnit (Objective-C), DSP Kernel (C) and a Faust .dsp file, if you wish to generate your DSP code with Faust.</string>
+	<string>This generates a new AudioKit node set up for DSP processing. It consists of an AKNode (Swift), AudioUnit (Objective-C), a placeholder .hpp file for the DSP code and a Faust .dsp file, if you wish to generate your DSP code with Faust.</string>
 	<key>Kind</key>
 	<string>Xcode.IDEKit.TextSubstitutionFileTemplateKind</string>
 	<key>Options</key>

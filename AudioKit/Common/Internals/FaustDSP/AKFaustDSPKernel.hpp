@@ -1,5 +1,5 @@
 //  
-//  AKDistortion1DSPKernel.hpp
+//  AKChorusDSPKernel.hpp
 //  AudioKit
 //
 //  Created by Max Muermann on 7/10/17.
@@ -9,22 +9,22 @@
 #pragma once
 
 #import "AKDSPKernel.hpp"
-#import "Distortion1.hpp"
+#import "GUI.hpp"
 
-
-class AKDistortion1DSPKernel : public AKDSPKernel, public AKBuffered {
+class AKFaustDSPKernel : public AKDSPKernel, public AKBuffered {
 public:
     // MARK: Member Functions
 
-    AKDistortion1DSPKernel() {
-        dsp = new Distortion1DSP();
+    AKFaustDSPKernel() {}
+
+    void setDSP(dsp* pDSP) {
+        dsp = pDSP;
         ui = new AKFaustUI();
         dsp->buildUserInterface(ui);
     }
 
     void init(int _channels, double _sampleRate) override {
         AKDSPKernel::init(_channels, _sampleRate);
-
         dsp->init(_sampleRate);
     }
 
@@ -108,7 +108,7 @@ public:
 
 private:
 
-    Distortion1DSP *dsp;
+    dsp *dsp;
     float param0 = 1.0;
 
 public:

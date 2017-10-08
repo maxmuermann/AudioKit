@@ -1,7 +1,7 @@
 //  ___FILEHEADER___
 
 #pragma once
-#import "AKAudioUnit.h"
+#import "AKFaustAudioUnit.h"
 
-@interface AK___VARIABLE_nodeName___AudioUnit : AKAudioUnit
+@interface AK___VARIABLE_nodeName___AudioUnit : AKFaustAudioUnit
 @end

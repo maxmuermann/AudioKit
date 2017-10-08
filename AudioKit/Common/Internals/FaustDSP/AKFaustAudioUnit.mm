@@ -1,30 +1,34 @@
 //  
-//  AKDistortion1AudioUnit.mm
+//  AKFaustAudioUnit.mm
 //  AudioKit
 //
 //  Created by Max Muermann on 7/10/17.
 //  Copyright © 2017 AudioKit. All rights reserved.
 //
 
-#import "AKDistortion1AudioUnit.h"
-#import "AKDistortion1DSPKernel.hpp"
+#import "AKFaustAudioUnit.h"
+#import "AKFaustDSPKernel.hpp"
 
 #import "BufferedAudioBus.hpp"
 
 #import <AudioKit/AudioKit-Swift.h>
 
-@implementation AKDistortion1AudioUnit {
+@implementation AKFaustAudioUnit {
     // C++ members need to be ivars; they would be copied on access if they were properties.
-    AKDistortion1DSPKernel _kernel;
+    AKFaustDSPKernel _kernel;
     BufferedInputBus _inputBus;
 }
 @synthesize parameterTree = _parameterTree;
+
+-(void)setDSP:(void*)DSP {
+    _kernel.setDSP((dsp*)DSP);
+}
 
 standardKernelPassthroughs()
 
 - (void)createParameters {
 
-    standardSetup(Distortion1) // for generator nodes, use generatorSetup(AKDistortion1AudioUnit) instead
+    standardSetup(Faust) // for generator nodes, use generatorSetup() instead
 
     // automatically generate AudioUnit parameters from Faust UI definition
     NSMutableArray* auParameters = [[NSMutableArray alloc] init];
@@ -39,15 +43,22 @@ standardKernelPassthroughs()
 
         [auParameters addObject:param];
     }
-
+    
     // Create the parameter tree.
     _parameterTree = [AUParameterTree tree: auParameters];
 
+    __block AKFaustDSPKernel *blockKernel = &_kernel;
+    
+    self.parameterTree.implementorValueObserver = ^(AUParameter *param, AUValue value) {
+        blockKernel->setParameter(param.address, value);
+    };
 
-    parameterTreeBlock(Distortion1)
+    self.parameterTree.implementorValueProvider = ^(AUParameter *param) {
+        return blockKernel->getParameter(param.address);
+    };
 }
 
-AUAudioUnitOverrides(Distortion1);
+AUAudioUnitOverrides(Faust);
 
 @end
 

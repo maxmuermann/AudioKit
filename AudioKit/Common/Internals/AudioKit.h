@@ -161,5 +161,6 @@ FOUNDATION_EXPORT const unsigned char AudioKitVersionString[];
 #endif
 
 // Faust DSP Nodes
+#import "AKFaustAudioUnit.h"
 #import "AKChorusAudioUnit.h"
 #import "AKDistortion1AudioUnit.h"

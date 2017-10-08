@@ -6,8 +6,12 @@
 //  Copyright © 2017 AudioKit. All rights reserved.
 //
 
-#pragma once
+#ifndef __AK_FAUST_AUDIO_UNIT_H
+#define __AK_FAUST_AUDIO_UNIT_H
 #import "AKAudioUnit.h"
 
-@interface AKChorusAudioUnit : AKAudioUnit
+@interface AKFaustAudioUnit : AKAudioUnit
+-(void)setDSP:(void*)DSP;
+-(void)createParameters;
 @end
+#endif

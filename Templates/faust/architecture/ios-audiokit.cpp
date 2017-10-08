@@ -2,7 +2,7 @@
 
 <<includeIntrinsic>>
 
-#include "GUI.hpp"
+#include "FaustDSP.hpp"
 #include <math.h>
 
 #define max(a,b) ((a < b) ? b : a)
