@@ -8,6 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		07C0F21B1F13EE1200F928C9 /* AKMIDITransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07C0F21A1F13EE1200F928C9 /* AKMIDITransformer.swift */; };
+		50BA14751F889FE600C2346F /* AKFaustAudioUnit.h in Headers */ = {isa = PBXBuildFile; fileRef = 50BA146D1F889FE600C2346F /* AKFaustAudioUnit.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		50BA14761F889FE600C2346F /* AKFaustAudioUnit.mm in Sources */ = {isa = PBXBuildFile; fileRef = 50BA146E1F889FE600C2346F /* AKFaustAudioUnit.mm */; };
+		50BA14771F889FE600C2346F /* AKFaustDSPKernel.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 50BA146F1F889FE600C2346F /* AKFaustDSPKernel.hpp */; };
+		50CC49A61F886E5F00974D4D /* GUI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 50CC49A41F886E5F00974D4D /* GUI.cpp */; };
+		50CC49A71F886E5F00974D4D /* GUI.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 50CC49A51F886E5F00974D4D /* GUI.hpp */; };
+		50D97F5E1F89B4B30023991D /* FaustDSP.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 50D97F311F89974E0023991D /* FaustDSP.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		52145B0C1F3C56EE0069C88B /* AKDynaRageCompressor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52145B081F3C56EE0069C88B /* AKDynaRageCompressor.swift */; };
 		52145B0D1F3C56EE0069C88B /* AKDynaRageCompressorAudioUnit.h in Headers */ = {isa = PBXBuildFile; fileRef = 52145B091F3C56EE0069C88B /* AKDynaRageCompressorAudioUnit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		52145B0E1F3C56EE0069C88B /* AKDynaRageCompressorAudioUnit.mm in Sources */ = {isa = PBXBuildFile; fileRef = 52145B0A1F3C56EE0069C88B /* AKDynaRageCompressorAudioUnit.mm */; };
@@ -963,6 +969,12 @@
 
 /* Begin PBXFileReference section */
 		07C0F21A1F13EE1200F928C9 /* AKMIDITransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AKMIDITransformer.swift; sourceTree = "<group>"; };
+		50BA146D1F889FE600C2346F /* AKFaustAudioUnit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AKFaustAudioUnit.h; sourceTree = "<group>"; };
+		50BA146E1F889FE600C2346F /* AKFaustAudioUnit.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AKFaustAudioUnit.mm; sourceTree = "<group>"; };
+		50BA146F1F889FE600C2346F /* AKFaustDSPKernel.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = AKFaustDSPKernel.hpp; sourceTree = "<group>"; };
+		50CC49A41F886E5F00974D4D /* GUI.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = GUI.cpp; sourceTree = "<group>"; };
+		50CC49A51F886E5F00974D4D /* GUI.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = GUI.hpp; sourceTree = "<group>"; };
+		50D97F311F89974E0023991D /* FaustDSP.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = FaustDSP.hpp; sourceTree = "<group>"; };
 		52145B081F3C56EE0069C88B /* AKDynaRageCompressor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AKDynaRageCompressor.swift; sourceTree = "<group>"; };
 		52145B091F3C56EE0069C88B /* AKDynaRageCompressorAudioUnit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AKDynaRageCompressorAudioUnit.h; sourceTree = "<group>"; };
 		52145B0A1F3C56EE0069C88B /* AKDynaRageCompressorAudioUnit.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AKDynaRageCompressorAudioUnit.mm; sourceTree = "<group>"; };
@@ -1935,6 +1947,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		50D97F331F89AE500023991D /* FaustDSP */ = {
+			isa = PBXGroup;
+			children = (
+				50CC49A41F886E5F00974D4D /* GUI.cpp */,
+				50CC49A51F886E5F00974D4D /* GUI.hpp */,
+				50D97F311F89974E0023991D /* FaustDSP.hpp */,
+				50BA146D1F889FE600C2346F /* AKFaustAudioUnit.h */,
+				50BA146E1F889FE600C2346F /* AKFaustAudioUnit.mm */,
+				50BA146F1F889FE600C2346F /* AKFaustDSPKernel.hpp */,
+			);
+			path = FaustDSP;
+			sourceTree = "<group>";
+		};
 		52145B071F3C56EE0069C88B /* DynaRage Tube Compressor */ = {
 			isa = PBXGroup;
 			children = (
@@ -2402,6 +2427,7 @@
 		C42F350D1C057F4C000E937C /* Internals */ = {
 			isa = PBXGroup;
 			children = (
+				50D97F331F89AE500023991D /* FaustDSP */,
 				52145B1A1F3C5B1A0069C88B /* Helpers */,
 				C42F35051C057E03000E937C /* Info.plist */,
 				C42F35031C057E03000E937C /* AudioKit.h */,
@@ -4227,6 +4253,8 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				50BA14751F889FE600C2346F /* AKFaustAudioUnit.h in Headers */,
+				50D97F5E1F89B4B30023991D /* FaustDSP.hpp in Headers */,
 				C47DDCC61F7CE33D002520B9 /* AK4LinearParamRamp.hpp in Headers */,
 				C47DDCC11F7CE2F4002520B9 /* GainEffectDsp.hpp in Headers */,
 				55E4F5211F57CB540088018A /* AKSamplerMetronome.h in Headers */,
@@ -4329,7 +4357,9 @@
 				C47047AE1E76A2FD00D9906F /* TubeBell.h in Headers */,
 				C40C41661C40E3A5009D870B /* EZOutput.h in Headers */,
 				C4537FC61C3A438D00A51738 /* AKHighPassButterworthFilterAudioUnit.h in Headers */,
+				50CC49A71F886E5F00974D4D /* GUI.hpp in Headers */,
 				C40C41561C40E3A5009D870B /* EZAudioFile.h in Headers */,
+				50BA14771F889FE600C2346F /* AKFaustDSPKernel.hpp in Headers */,
 				52145B511F3C5B1A0069C88B /* Equalisator.h in Headers */,
 				C48C6C4C1D3C15F1008EA51B /* _kiss_fft_guts.h in Headers */,
 				C40718041D2119AC00665C02 /* SKINImsg.h in Headers */,
@@ -4920,6 +4950,7 @@
 				C48C6C7C1D3C15F1008EA51B /* hilbert.c in Sources */,
 				C48C6CAE1D3C15F1008EA51B /* tenv.c in Sources */,
 				C4F8C8B81DCA8CE4001F38F2 /* blsaw.c in Sources */,
+				50CC49A61F886E5F00974D4D /* GUI.cpp in Sources */,
 				C48C6C721D3C15F1008EA51B /* expon.c in Sources */,
 				C4F8C8DC1DCA8CE4001F38F2 /* gen_rand.c in Sources */,
 				C4F8C8E11DCA8CE4001F38F2 /* hilbert.c in Sources */,
@@ -5114,6 +5145,7 @@
 				C463028C1C20E7A7009B44D9 /* phasor.swift in Sources */,
 				C470478E1E76995200D9906F /* FileLoop.cpp in Sources */,
 				C4F8C90F1DCA8CE4001F38F2 /* reverse.c in Sources */,
+				50BA14761F889FE600C2346F /* AKFaustAudioUnit.mm in Sources */,
 				52145B0E1F3C56EE0069C88B /* AKDynaRageCompressorAudioUnit.mm in Sources */,
 				C4A1073B1E6963C10018848C /* AKBrownianNoise.swift in Sources */,
 				C44DD5A31F3E45C800919962 /* AKOfflineRenderNode.swift in Sources */,

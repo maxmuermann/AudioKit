@@ -2,7 +2,7 @@
 
 <<includeIntrinsic>>
 
-#include "CUI.h"
+#include <AudioKit/FaustDSP.hpp>
 #include <math.h>
 
 #define max(a,b) ((a < b) ? b : a)

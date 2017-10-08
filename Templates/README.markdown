@@ -7,7 +7,7 @@ Run `./install.sh` from the Templates/XCode directory.
 ## Install Faust
 1. install llvm:
   `brew install --with-clang llvm`
-2. Get the lastest faust source. You will need the faust2 branch in order to be able to generate C code:
+2. Get the lastest faust source. You probably want the faust2 branch:
   ```
   git clone https://github.com/grame-cncm/faust.git
   git checkout faust2

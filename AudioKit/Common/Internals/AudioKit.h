@@ -159,3 +159,7 @@ FOUNDATION_EXPORT const unsigned char AudioKitVersionString[];
 #import "EZAudioPlot.h"
 #import "EZAudioPlotGL.h"
 #endif
+
+// Faust DSP Nodes
+#import "FaustDSP.hpp"
+#import "AKFaustAudioUnit.h"
