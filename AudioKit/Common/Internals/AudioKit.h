@@ -161,5 +161,5 @@ FOUNDATION_EXPORT const unsigned char AudioKitVersionString[];
 #endif
 
 // Faust DSP Nodes
+#import "FaustDSP.hpp"
 #import "AKFaustAudioUnit.h"
-

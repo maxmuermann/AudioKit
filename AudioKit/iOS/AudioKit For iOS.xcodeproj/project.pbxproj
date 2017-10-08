@@ -13,6 +13,7 @@
 		50BA14771F889FE600C2346F /* AKFaustDSPKernel.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 50BA146F1F889FE600C2346F /* AKFaustDSPKernel.hpp */; };
 		50CC49A61F886E5F00974D4D /* GUI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 50CC49A41F886E5F00974D4D /* GUI.cpp */; };
 		50CC49A71F886E5F00974D4D /* GUI.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 50CC49A51F886E5F00974D4D /* GUI.hpp */; };
+		50D97F5E1F89B4B30023991D /* FaustDSP.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 50D97F311F89974E0023991D /* FaustDSP.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		52145B0C1F3C56EE0069C88B /* AKDynaRageCompressor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52145B081F3C56EE0069C88B /* AKDynaRageCompressor.swift */; };
 		52145B0D1F3C56EE0069C88B /* AKDynaRageCompressorAudioUnit.h in Headers */ = {isa = PBXBuildFile; fileRef = 52145B091F3C56EE0069C88B /* AKDynaRageCompressorAudioUnit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		52145B0E1F3C56EE0069C88B /* AKDynaRageCompressorAudioUnit.mm in Sources */ = {isa = PBXBuildFile; fileRef = 52145B0A1F3C56EE0069C88B /* AKDynaRageCompressorAudioUnit.mm */; };
@@ -4253,6 +4254,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				50BA14751F889FE600C2346F /* AKFaustAudioUnit.h in Headers */,
+				50D97F5E1F89B4B30023991D /* FaustDSP.hpp in Headers */,
 				C47DDCC61F7CE33D002520B9 /* AK4LinearParamRamp.hpp in Headers */,
 				C47DDCC11F7CE2F4002520B9 /* GainEffectDsp.hpp in Headers */,
 				55E4F5211F57CB540088018A /* AKSamplerMetronome.h in Headers */,
