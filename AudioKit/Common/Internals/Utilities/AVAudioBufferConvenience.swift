@@ -67,6 +67,7 @@ extension AVAudioPCMBuffer {
         } else {
             return nil
         }
+        buffer.frameLength = endSample
         return buffer
     }
 }

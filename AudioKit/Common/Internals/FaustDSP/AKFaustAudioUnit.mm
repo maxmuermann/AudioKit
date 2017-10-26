@@ -24,6 +24,10 @@
     _kernel.setDSP((dsp*)DSP);
 }
 
+-(NSArray<AUParameter*>*)getParameters {
+    return _parameterTree.allParameters;
+}
+
 standardKernelPassthroughs()
 
 - (void)createParameters {

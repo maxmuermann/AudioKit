@@ -50,6 +50,7 @@ public:
     }
 
     void setParameter(AUParameterAddress address, AUValue value) {
+        printf("set param");
         AKFaustParameter * param = ui->parameters[address];
         float clampedValue = clamp(value, param->min, param->max);
         if (param->ramper) {
@@ -73,6 +74,8 @@ public:
         float clampedValue = clamp(value, param->min, param->max);
         if (param->ramper) {
             return param->ramper->startRamp(clampedValue, duration);
+        } else {
+            *(param->zone) = clampedValue;
         }
     }
 

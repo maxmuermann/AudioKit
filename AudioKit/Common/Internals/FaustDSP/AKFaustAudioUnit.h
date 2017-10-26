@@ -13,5 +13,6 @@
 @interface AKFaustAudioUnit : AKAudioUnit
 -(void)setDSP:(void*)DSP;
 -(void)createParameters;
+-(NSArray<AUParameter*>*)getParameters;
 @end
 #endif
