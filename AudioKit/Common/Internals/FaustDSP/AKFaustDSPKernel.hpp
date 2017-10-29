@@ -50,8 +50,7 @@ public:
     }
 
     void setParameter(AUParameterAddress address, AUValue value) {
-        printf("set param");
-        AKFaustParameter * param = ui->parameters[address];
+        AKFaustParameter * param = ui->parameters[(unsigned long)address];
         float clampedValue = clamp(value, param->min, param->max);
         if (param->ramper) {
             param->ramper->setImmediate(clampedValue);
@@ -61,7 +60,7 @@ public:
     }
 
     AUValue getParameter(AUParameterAddress address) {
-        AKFaustParameter * param = ui->parameters[address];
+        AKFaustParameter * param = ui->parameters[(unsigned long)address];
         if (param->ramper) {
             return param->ramper->getUIValue();
         } else {
@@ -70,7 +69,7 @@ public:
     }
 
     void startRamp(AUParameterAddress address, AUValue value, AUAudioFrameCount duration) override {
-        AKFaustParameter * param = ui->parameters[address];
+        AKFaustParameter * param = ui->parameters[(unsigned long)address];
         float clampedValue = clamp(value, param->min, param->max);
         if (param->ramper) {
             return param->ramper->startRamp(clampedValue, duration);
