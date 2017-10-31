@@ -83,6 +83,7 @@ open class AKAmplitudeTracker: AKNode, AKToggleable, AKComponent, AKInput {
 
             self?.avAudioNode = avAudioUnit
             self?.internalAU = avAudioUnit.auAudioUnit as? AKAudioUnitType
+            self?.internalAU?.threshold = Float(threshold)
             self!.internalAU!.thresholdCallback = thresholdCallback
 
             if let au = self?.internalAU {
