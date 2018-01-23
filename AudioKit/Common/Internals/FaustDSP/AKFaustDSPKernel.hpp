@@ -37,7 +37,9 @@ public:
     }
 
     void destroy() {
-        free(dsp);
+//        if(dsp) {
+//            free(dsp);
+//        }
     }
 
     void reset() {
