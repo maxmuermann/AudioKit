@@ -1,6 +1,6 @@
 {
     "name": "AudioKit",
-    "version": "4.0.4",
+    "version": "4.1",
     "authors": {
         "Aurelius Prochazka": "audiokit@audiokit.io"
     },
@@ -12,7 +12,7 @@
     "social_media_url": "http://twitter.com/AudioKitMan",
     "documentation_url": "http://audiokit.io/docs/",
     "source": {
-        "http": "https://github.com/audiokit/AudioKit/releases/download/v4.0.4/AudioKit.framework.zip"
+        "http": "https://github.com/audiokit/AudioKit/releases/download/v4.1/AudioKit.framework.zip"
     },
     "summary": "Open-source audio synthesis, processing, & analysis platform.",
     "platforms": {
@@ -20,6 +20,7 @@
         "ios": "9.0",
         "tvos": "9.0"
     },
+    "swift_version": "4.0",
     "frameworks": [
 	"AVFoundation"
     ],
@@ -34,12 +35,22 @@
     "ios": {
         "source_files": "iOS/AudioKit.framework/Headers/*.h",
         "public_header_files": "iOS/AudioKit.framework/Headers/*.h",
-        "vendored_frameworks": "iOS/AudioKit.framework"
+        "vendored_frameworks": "iOS/AudioKit.framework",
+        "script_phases": {
+            "name": "AudioKit iOS Framework Cleanup",
+            "execution_position": "after_compile",
+            "script": "\"$BUILT_PRODUCTS_DIR/$FRAMEWORKS_FOLDER_PATH/AudioKit.framework/fix-framework.sh\""
+        }
     },
     "tvos": {
         "source_files": "tvOS/AudioKit.framework/Headers/*.h",
         "public_header_files": "tvOS/AudioKit.framework/Headers/*.h",
-        "vendored_frameworks": "tvOS/AudioKit.framework"
+        "vendored_frameworks": "tvOS/AudioKit.framework",
+        "script_phases": {
+            "name": "AudioKit tvOS Framework Cleanup",
+            "execution_position": "after_compile",
+            "script": "\"$BUILT_PRODUCTS_DIR/$FRAMEWORKS_FOLDER_PATH/AudioKit.framework/fix-framework.sh\""
+        }
     },
     "subspecs" : [
       {
