@@ -7,7 +7,7 @@
 //
 
 /// A timing protocol used for syncronizing different audio sources.
-@objc protocol AKTiming {
+@objc public protocol AKTiming {
 
     /// Starts playback at a specific time.
     /// - Parameter audioTime: A time in the audio render context.
@@ -41,23 +41,23 @@
 open class AKNodeTiming: NSObject, AKTiming {
 
     /// An output node used for tming info.
-    weak var node: AKOutput?
+    open weak var node: AKOutput?
 
     // Used to hold current time when not playing.
     private var idleTime = Double()
 
-    // When playback begins, this is set to a time in the past that represent "time zero" in 
+    // When playback begins, this is set to a time in the past that represent "time zero" in
     // the timeline.
     private var baseTime: AVAudioTime?
 
     /// The current time in the timeline (seconds).
-    public var currentTime: Double {
+    open var currentTime: Double {
         get { return time(atAudioTime: nil) }
         set { setTime(newValue) }
     }
 
     /// Sets the current time in the timeline (seconds).
-    func setTime(_ time: Double) {
+    open func setTime(_ time: Double) {
         stop()
         idleTime = time
     }
