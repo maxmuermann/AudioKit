@@ -18,14 +18,13 @@ open class AKPluckedString: AKNode, AKToggleable, AKComponent {
     private var internalAU: AKAudioUnitType?
     private var token: AUParameterObserverToken?
 
-
     fileprivate var frequencyParameter: AUParameter?
     fileprivate var amplitudeParameter: AUParameter?
 
-    /// Ramp Time represents the speed at which parameters are allowed to change
-    @objc open dynamic var rampTime: Double = AKSettings.rampTime {
+    /// Ramp Duration represents the speed at which parameters are allowed to change
+    @objc open dynamic var rampDuration: Double = AKSettings.rampDuration {
         willSet {
-            internalAU?.rampTime = newValue
+            internalAU?.rampDuration = newValue
         }
     }
 
@@ -67,7 +66,6 @@ open class AKPluckedString: AKNode, AKToggleable, AKComponent {
     }
 
     // MARK: - Initialization
-
 
     /// Initialize this pluck node
     ///
@@ -136,7 +134,6 @@ open class AKPluckedString: AKNode, AKToggleable, AKComponent {
         internalAU?.start()
         internalAU?.triggerFrequency(Float(frequency), amplitude: Float(amplitude))
     }
-
 
     /// Function to start, play, or activate the node, all do the same thing
     @objc open func start() {

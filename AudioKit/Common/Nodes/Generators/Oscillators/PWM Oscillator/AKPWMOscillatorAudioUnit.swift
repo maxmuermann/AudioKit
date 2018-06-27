@@ -34,8 +34,8 @@ public class AKPWMOscillatorAudioUnit: AKGeneratorAudioUnitBase {
         didSet { setParameter(.detuningMultiplier, value: detuningMultiplier) }
     }
 
-    var rampTime: Double = 0.0 {
-        didSet { setParameter(.rampTime, value: rampTime) }
+    var rampDuration: Double = 0.0 {
+        didSet { setParameter(.rampDuration, value: rampDuration) }
     }
 
     public override func initDSP(withSampleRate sampleRate: Double,
@@ -43,7 +43,7 @@ public class AKPWMOscillatorAudioUnit: AKGeneratorAudioUnitBase {
         return createPWMOscillatorDSP(Int32(count), sampleRate)
     }
 
-    override init(componentDescription: AudioComponentDescription,
+    public override init(componentDescription: AudioComponentDescription,
                   options: AudioComponentInstantiationOptions = []) throws {
         try super.init(componentDescription: componentDescription, options: options)
 
@@ -54,7 +54,7 @@ public class AKPWMOscillatorAudioUnit: AKGeneratorAudioUnitBase {
             name: "Frequency (Hz)",
             address: AUParameterAddress(0),
             min: 0,
-            max: 20000,
+            max: 20_000,
             unit: .hertz,
             unitName: nil,
             flags: flags,
@@ -89,8 +89,8 @@ public class AKPWMOscillatorAudioUnit: AKGeneratorAudioUnitBase {
             withIdentifier: "detuningOffset",
             name: "Frequency offset (Hz)",
             address: AUParameterAddress(3),
-            min: -1000,
-            max: 1000,
+            min: -1_000,
+            max: 1_000,
             unit: .hertz,
             unitName: nil,
             flags: flags,
@@ -109,7 +109,7 @@ public class AKPWMOscillatorAudioUnit: AKGeneratorAudioUnitBase {
             valueStrings: nil,
             dependentParameters: nil
         )
-        
+
         setParameterTree(AUParameterTree.createTree(withChildren: [frequency, amplitude, pulseWidth, detuningOffset, detuningMultiplier]))
         frequency.value = 440
         amplitude.value = 1
@@ -118,6 +118,6 @@ public class AKPWMOscillatorAudioUnit: AKGeneratorAudioUnitBase {
         detuningMultiplier.value = 1
     }
 
-    public override var canProcessInPlace: Bool { get { return true; }}
+    public override var canProcessInPlace: Bool { return true } 
 
 }

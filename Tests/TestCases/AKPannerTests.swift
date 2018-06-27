@@ -2,7 +2,7 @@
 //  AKPannerTests.swift
 //  AudioKitTestSuite
 //
-//  Created by Aurelius Prochazka on 1/12/18.
+//  Created by Aurelius Prochazka, revision history on Githbub.
 //  Copyright © 2018 AudioKit. All rights reserved.
 //
 
@@ -26,4 +26,3 @@ class AKPannerTests: AKTestCase {
         AKTestMD5("6b75baedc4700e335f665785e8648c14")
     }
 }
-

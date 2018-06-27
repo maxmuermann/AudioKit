@@ -2,8 +2,8 @@
 //  AKStereoFieldLimiterAudioUnit.swift
 //  AudioKit
 //
-//  Created by Andrew Voelkel on 9/23/17.
-//  Copyright © 2017 AudioKit. All rights reserved.
+//  Created by Andrew Voelkel, revision history on Github.
+//  Copyright © 2018 AudioKit. All rights reserved.
 //
 
 import AVFoundation
@@ -22,8 +22,8 @@ public class AKStereoFieldLimiterAudioUnit: AKAudioUnitBase {
         didSet { setParameter(.amount, value: amount) }
     }
 
-    var rampTime: Double = 0.0 {
-        didSet { setParameter(.rampTime, value: rampTime) }
+    var rampDuration: Double = 0.0 {
+        didSet { setParameter(.rampDuration, value: rampDuration) }
     }
 
     public override func initDSP(withSampleRate sampleRate: Double,
@@ -31,7 +31,7 @@ public class AKStereoFieldLimiterAudioUnit: AKAudioUnitBase {
         return createStereoFieldLimiterDSP(Int32(count), sampleRate)
     }
 
-    override init(componentDescription: AudioComponentDescription,
+    public override init(componentDescription: AudioComponentDescription,
                   options: AudioComponentInstantiationOptions = []) throws {
         try super.init(componentDescription: componentDescription, options: options)
 
@@ -49,6 +49,6 @@ public class AKStereoFieldLimiterAudioUnit: AKAudioUnitBase {
         amount.value = 1.0
     }
 
-    public override var canProcessInPlace: Bool { get { return true; }}
+    public override var canProcessInPlace: Bool { return true } 
 
 }

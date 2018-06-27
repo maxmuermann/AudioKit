@@ -3,7 +3,7 @@
 //  AudioKit
 //
 //  Created by Andrew Voelkel, revision history on GitHub.
-//  Copyright © 2017 AudioKit. All rights reserved.
+//  Copyright © 2018 AudioKit. All rights reserved.
 //
 
 #import "AKAudioUnitBase.h"
@@ -105,7 +105,7 @@
 
     // Initialize a default format for the busses.
     AVAudioFormat *defaultFormat = [[AVAudioFormat alloc] initStandardFormatWithSampleRate:AKSettings.sampleRate
-                                                                                  channels:AKSettings.numberOfChannels];
+                                                                                  channels:AKSettings.channelCount];
 
     _kernel = (AKDSPBase*)[self initDSPWithSampleRate:defaultFormat.sampleRate
                                          channelCount:defaultFormat.channelCount];
@@ -164,6 +164,7 @@
 
 - (void)deallocateRenderResources {
     _inputBus.deallocateRenderResources();
+    _kernel->deinit();
     [super deallocateRenderResources];
 }
 

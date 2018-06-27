@@ -34,8 +34,8 @@ public class AKVocalTractAudioUnit: AKGeneratorAudioUnitBase {
         didSet { setParameter(.nasality, value: nasality) }
     }
 
-    var rampTime: Double = 0.0 {
-        didSet { setParameter(.rampTime, value: rampTime) }
+    var rampDuration: Double = 0.0 {
+        didSet { setParameter(.rampDuration, value: rampDuration) }
     }
 
     public override func initDSP(withSampleRate sampleRate: Double,
@@ -43,7 +43,7 @@ public class AKVocalTractAudioUnit: AKGeneratorAudioUnitBase {
         return createVocalTractDSP(Int32(count), sampleRate)
     }
 
-    override init(componentDescription: AudioComponentDescription,
+    public override init(componentDescription: AudioComponentDescription,
                   options: AudioComponentInstantiationOptions = []) throws {
         try super.init(componentDescription: componentDescription, options: options)
 
@@ -54,7 +54,7 @@ public class AKVocalTractAudioUnit: AKGeneratorAudioUnitBase {
             name: "Glottal frequency.",
             address: AUParameterAddress(0),
             min: 0.0,
-            max: 22050.0,
+            max: 22_050.0,
             unit: .hertz,
             unitName: nil,
             flags: flags,
@@ -109,7 +109,7 @@ public class AKVocalTractAudioUnit: AKGeneratorAudioUnitBase {
             valueStrings: nil,
             dependentParameters: nil
         )
-        
+
         setParameterTree(AUParameterTree.createTree(withChildren: [frequency, tonguePosition, tongueDiameter, tenseness, nasality]))
         frequency.value = 160.0
         tonguePosition.value = 0.5
@@ -118,6 +118,6 @@ public class AKVocalTractAudioUnit: AKGeneratorAudioUnitBase {
         nasality.value = 0.0
     }
 
-    public override var canProcessInPlace: Bool { get { return true; }}
+    public override var canProcessInPlace: Bool { return true } 
 
 }

@@ -3,7 +3,7 @@
 //  AudioKit
 //
 //  Created by Laurent Veliscek, revision history on Github.
-//  Copyright © 2017 AudioKit. All rights reserved.
+//  Copyright © 2018 AudioKit. All rights reserved.
 //
 
 /// Adding description property
@@ -342,7 +342,7 @@ extension AVAudioCommonFormat: CustomStringConvertible {
     /// - returns: An initialized AKAudioFile for writing, or nil if init failed.
     ///
     public override init(forWriting fileURL: URL,
-                         settings: [String : Any],
+                         settings: [String: Any],
                          commonFormat format: AVAudioCommonFormat,
                          interleaved: Bool) throws {
         try super.init(forWriting: fileURL,

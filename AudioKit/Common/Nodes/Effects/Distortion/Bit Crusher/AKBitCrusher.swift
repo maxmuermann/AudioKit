@@ -14,22 +14,33 @@ open class AKBitCrusher: AKNode, AKToggleable, AKComponent, AKInput {
     public static let ComponentDescription = AudioComponentDescription(effect: "btcr")
 
     // MARK: - Properties
-
     private var internalAU: AKAudioUnitType?
     private var token: AUParameterObserverToken?
 
     fileprivate var bitDepthParameter: AUParameter?
     fileprivate var sampleRateParameter: AUParameter?
 
-    /// Ramp Time represents the speed at which parameters are allowed to change
-    @objc open dynamic var rampTime: Double = AKSettings.rampTime {
+    /// Lower and upper bounds for Bit Depth
+    public static let bitDepthRange = 1.0 ... 24.0
+
+    /// Lower and upper bounds for Sample Rate
+    public static let sampleRateRange = 0.0 ... 20_000.0
+
+    /// Initial value for Bit Depth
+    public static let defaultBitDepth = 8.0
+
+    /// Initial value for Sample Rate
+    public static let defaultSampleRate = 10_000.0
+
+    /// Ramp Duration represents the speed at which parameters are allowed to change
+    @objc open dynamic var rampDuration: Double = AKSettings.rampDuration {
         willSet {
-            internalAU?.rampTime = newValue
+            internalAU?.rampDuration = newValue
         }
     }
 
     /// The bit depth of signal output. Typically in range (1-24). Non-integer values are OK.
-    @objc open dynamic var bitDepth: Double = 8 {
+    @objc open dynamic var bitDepth: Double = defaultBitDepth {
         willSet {
             if bitDepth == newValue {
                 return
@@ -45,7 +56,7 @@ open class AKBitCrusher: AKNode, AKToggleable, AKComponent, AKInput {
     }
 
     /// The sample rate of signal output.
-    @objc open dynamic var sampleRate: Double = 10_000 {
+    @objc open dynamic var sampleRate: Double = defaultSampleRate {
         willSet {
             if sampleRate == newValue {
                 return
@@ -76,8 +87,9 @@ open class AKBitCrusher: AKNode, AKToggleable, AKComponent, AKInput {
     ///
     @objc public init(
         _ input: AKNode? = nil,
-        bitDepth: Double = 8,
-        sampleRate: Double = 10_000) {
+        bitDepth: Double = defaultBitDepth,
+        sampleRate: Double = defaultSampleRate
+        ) {
 
         self.bitDepth = bitDepth
         self.sampleRate = sampleRate

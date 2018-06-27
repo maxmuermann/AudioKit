@@ -16,7 +16,6 @@ open class AKFormantFilter: AKNode, AKToggleable, AKComponent, AKInput {
     public static let ComponentDescription = AudioComponentDescription(effect: "fofi")
 
     // MARK: - Properties
-
     private var internalAU: AKAudioUnitType?
     private var token: AUParameterObserverToken?
 
@@ -24,15 +23,33 @@ open class AKFormantFilter: AKNode, AKToggleable, AKComponent, AKInput {
     fileprivate var attackDurationParameter: AUParameter?
     fileprivate var decayDurationParameter: AUParameter?
 
-    /// Ramp Time represents the speed at which parameters are allowed to change
-    @objc open dynamic var rampTime: Double = AKSettings.rampTime {
+    /// Lower and upper bounds for Center Frequency
+    public static let centerFrequencyRange = 12.0 ... 20_000.0
+
+    /// Lower and upper bounds for Attack Duration
+    public static let attackDurationRange = 0.0 ... 0.1
+
+    /// Lower and upper bounds for Decay Duration
+    public static let decayDurationRange = 0.0 ... 0.1
+
+    /// Initial value for Center Frequency
+    public static let defaultCenterFrequency = 1_000.0
+
+    /// Initial value for Attack Duration
+    public static let defaultAttackDuration = 0.007
+
+    /// Initial value for Decay Duration
+    public static let defaultDecayDuration = 0.04
+
+    /// Ramp Duration represents the speed at which parameters are allowed to change
+    @objc open dynamic var rampDuration: Double = AKSettings.rampDuration {
         willSet {
-            internalAU?.rampTime = newValue
+            internalAU?.rampDuration = newValue
         }
     }
 
     /// Center frequency.
-    @objc open dynamic var centerFrequency: Double = 1_000 {
+    @objc open dynamic var centerFrequency: Double = defaultCenterFrequency {
         willSet {
             if centerFrequency == newValue {
                 return
@@ -47,8 +64,8 @@ open class AKFormantFilter: AKNode, AKToggleable, AKComponent, AKInput {
         }
     }
 
-    /// Impulse response attack time (in seconds).
-    @objc open dynamic var attackDuration: Double = 0.007 {
+    /// Impulse response attack duration (in seconds).
+    @objc open dynamic var attackDuration: Double = defaultAttackDuration {
         willSet {
             if attackDuration == newValue {
                 return
@@ -63,8 +80,8 @@ open class AKFormantFilter: AKNode, AKToggleable, AKComponent, AKInput {
         }
     }
 
-    /// Impulse reponse decay time (in seconds)
-    @objc open dynamic var decayDuration: Double = 0.04 {
+    /// Impulse reponse decay duration (in seconds)
+    @objc open dynamic var decayDuration: Double = defaultDecayDuration {
         willSet {
             if decayDuration == newValue {
                 return
@@ -91,14 +108,15 @@ open class AKFormantFilter: AKNode, AKToggleable, AKComponent, AKInput {
     /// - Parameters:
     ///   - input: Input node to process
     ///   - centerFrequency: Center frequency.
-    ///   - attackDuration: Impulse response attack time (in seconds).
-    ///   - decayDuration: Impulse reponse decay time (in seconds)
+    ///   - attackDuration: Impulse response attack duration (in seconds).
+    ///   - decayDuration: Impulse reponse decay duration (in seconds)
     ///
     @objc public init(
         _ input: AKNode? = nil,
-        centerFrequency: Double = 1_000,
-        attackDuration: Double = 0.007,
-        decayDuration: Double = 0.04) {
+        centerFrequency: Double = defaultCenterFrequency,
+        attackDuration: Double = defaultAttackDuration,
+        decayDuration: Double = defaultDecayDuration
+        ) {
 
         self.centerFrequency = centerFrequency
         self.attackDuration = attackDuration

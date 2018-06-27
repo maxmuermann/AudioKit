@@ -2,7 +2,7 @@
 //  AKPhoneView.swift
 //  AudioKit Playgrounds (macOS)
 //
-//  Created by Aurelius Prochazka on 7/31/16.
+//  Created by Aurelius Prochazka, revision history on Githbub.
 //  Copyright © 2017 Aurelius Prochazka. All rights reserved.
 //
 
@@ -231,7 +231,7 @@ public class AKPhoneView: NSView {
 
     public class func drawKey(text: String = "A B C", numeral: String = "1", isPressed: Bool = true) {
         //// General Declarations
-        let _ = NSGraphicsContext.current?.cgContext
+        _ = NSGraphicsContext.current?.cgContext
 
         //// Color Declarations
         let pressedKeyColor = #colorLiteral(red: 0.655, green: 0.745, blue: 0.804, alpha: 1)
@@ -300,7 +300,7 @@ public class AKPhoneView: NSView {
 
     public class func drawCenteredKey(numeral: String = "1", isPressed: Bool = true) {
         //// General Declarations
-        let _ = NSGraphicsContext.current?.cgContext
+        _ = NSGraphicsContext.current?.cgContext
 
         //// Color Declarations
         let pressedKeyColor = #colorLiteral(red: 0.655, green: 0.745, blue: 0.804, alpha: 1)

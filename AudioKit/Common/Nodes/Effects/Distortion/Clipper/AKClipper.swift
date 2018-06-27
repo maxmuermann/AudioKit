@@ -15,21 +15,26 @@ open class AKClipper: AKNode, AKToggleable, AKComponent, AKInput {
     public static let ComponentDescription = AudioComponentDescription(effect: "clip")
 
     // MARK: - Properties
-
     private var internalAU: AKAudioUnitType?
     private var token: AUParameterObserverToken?
 
     fileprivate var limitParameter: AUParameter?
 
-    /// Ramp Time represents the speed at which parameters are allowed to change
-    @objc open dynamic var rampTime: Double = AKSettings.rampTime {
+    /// Lower and upper bounds for Limit
+    public static let limitRange = 0.0 ... 1.0
+
+    /// Initial value for Limit
+    public static let defaultLimit = 1.0
+
+    /// Ramp Duration represents the speed at which parameters are allowed to change
+    @objc open dynamic var rampDuration: Double = AKSettings.rampDuration {
         willSet {
-            internalAU?.rampTime = newValue
+            internalAU?.rampDuration = newValue
         }
     }
 
     /// Threshold / limiting value.
-    @objc open dynamic var limit: Double = 1.0 {
+    @objc open dynamic var limit: Double = defaultLimit {
         willSet {
             if limit == newValue {
                 return
@@ -59,7 +64,8 @@ open class AKClipper: AKNode, AKToggleable, AKComponent, AKInput {
     ///
     @objc public init(
         _ input: AKNode? = nil,
-        limit: Double = 1.0) {
+        limit: Double = defaultLimit
+        ) {
 
         self.limit = limit
 

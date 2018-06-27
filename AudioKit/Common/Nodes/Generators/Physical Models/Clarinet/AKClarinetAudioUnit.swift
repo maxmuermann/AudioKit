@@ -2,7 +2,7 @@
 //  AKClarinetAudioUnit.swift
 //  AudioKit
 //
-//  Created by Aurelius Prochazka on 1/14/18.
+//  Created by Aurelius Prochazka, revision history on Githbub.
 //  Copyright © 2018 AudioKit. All rights reserved.
 //
 
@@ -25,8 +25,8 @@ public class AKClarinetAudioUnit: AKGeneratorAudioUnitBase {
         didSet { setParameter(.amplitude, value: amplitude) }
     }
 
-    var rampTime: Double = 0.0 {
-        didSet { setParameter(.rampTime, value: rampTime) }
+    var rampDuration: Double = 0.0 {
+        didSet { setParameter(.rampDuration, value: rampDuration) }
     }
 
     public override func initDSP(withSampleRate sampleRate: Double,
@@ -34,7 +34,7 @@ public class AKClarinetAudioUnit: AKGeneratorAudioUnitBase {
         return createClarinetDSP(Int32(count), sampleRate)
     }
 
-    override init(componentDescription: AudioComponentDescription,
+    public override init(componentDescription: AudioComponentDescription,
                   options: AudioComponentInstantiationOptions = []) throws {
         try super.init(componentDescription: componentDescription, options: options)
 
@@ -45,7 +45,7 @@ public class AKClarinetAudioUnit: AKGeneratorAudioUnitBase {
             name: "Frequency (Hz)",
             address: AUParameterAddress(0),
             min: 0,
-            max: 20000,
+            max: 20_000,
             unit: .hertz,
             unitName: nil,
             flags: flags,
@@ -69,6 +69,6 @@ public class AKClarinetAudioUnit: AKGeneratorAudioUnitBase {
         amplitude.value = 1
     }
 
-    public override var canProcessInPlace: Bool { get { return true; }}
+    public override var canProcessInPlace: Bool { return true } 
 
 }

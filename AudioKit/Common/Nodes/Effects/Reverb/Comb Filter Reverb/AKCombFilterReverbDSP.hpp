@@ -8,11 +8,11 @@
 
 #pragma once
 
-#import <Foundation/Foundation.h>
+#import <AVFoundation/AVFoundation.h>
 
-typedef NS_ENUM(int64_t, AKCombFilterReverbParameter) {
+typedef NS_ENUM(AUParameterAddress, AKCombFilterReverbParameter) {
     AKCombFilterReverbParameterReverbDuration,
-    AKCombFilterReverbParameterRampTime
+    AKCombFilterReverbParameterRampDuration
 };
 
 #import "AKLinearParameterRamp.hpp"  // have to put this here to get it included in umbrella header
@@ -45,24 +45,24 @@ public:
     }
 
     /** Uses the ParameterAddress as a key */
-    void setParameter(uint64_t address, float value, bool immediate) override {
+    void setParameter(AUParameterAddress address, float value, bool immediate) override {
         switch (address) {
             case AKCombFilterReverbParameterReverbDuration:
                 reverbDurationRamp.setTarget(value, immediate);
                 break;
-            case AKCombFilterReverbParameterRampTime:
-                reverbDurationRamp.setRampTime(value, _sampleRate);
+            case AKCombFilterReverbParameterRampDuration:
+                reverbDurationRamp.setRampDuration(value, _sampleRate);
                 break;
         }
     }
 
     /** Uses the ParameterAddress as a key */
-    float getParameter(uint64_t address) override {
+    float getParameter(AUParameterAddress address) override {
         switch (address) {
             case AKCombFilterReverbParameterReverbDuration:
                 return reverbDurationRamp.getTarget();
-            case AKCombFilterReverbParameterRampTime:
-                return reverbDurationRamp.getRampTime(_sampleRate);
+            case AKCombFilterReverbParameterRampDuration:
+                return reverbDurationRamp.getRampDuration(_sampleRate);
         }
         return 0;
     }
@@ -88,7 +88,7 @@ public:
         for (int frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
             int frameOffset = int(frameIndex + bufferOffset);
 
-            // do gain ramping every 8 samples
+            // do ramping every 8 samples
             if ((frameOffset & 0x7) == 0) {
                 reverbDurationRamp.advanceTo(_now + frameOffset);
             }
@@ -107,6 +107,7 @@ public:
                 }
                 if (!_playing) {
                     *out = *in;
+                    continue;
                 }
                 if (channel == 0) {
                     sp_comb_compute(_sp, _comb0, in, out);

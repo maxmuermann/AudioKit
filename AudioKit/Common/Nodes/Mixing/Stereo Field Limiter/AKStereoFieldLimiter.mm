@@ -2,8 +2,8 @@
 //  AKStereoFieldLimiter.mm
 //  AudioKit
 //
-//  Created by Andrew Voelkel on 9/23/17.
-//  Copyright © 2017 AudioKit. All rights reserved.
+//  Created by Andrew Voelkel, revision history on Github.
+//  Copyright © 2018 AudioKit. All rights reserved.
 //
 
 #import "AKStereoFieldLimiterDSP.hpp"

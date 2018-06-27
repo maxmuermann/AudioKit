@@ -8,15 +8,15 @@
 
 #pragma once
 
-#import <Foundation/Foundation.h>
+#import <AVFoundation/AVFoundation.h>
 
-typedef NS_ENUM(int64_t, AKPhaseDistortionOscillatorParameter) {
+typedef NS_ENUM(AUParameterAddress, AKPhaseDistortionOscillatorParameter) {
     AKPhaseDistortionOscillatorParameterFrequency,
     AKPhaseDistortionOscillatorParameterAmplitude,
     AKPhaseDistortionOscillatorParameterPhaseDistortion,
     AKPhaseDistortionOscillatorParameterDetuningOffset,
     AKPhaseDistortionOscillatorParameterDetuningMultiplier,
-    AKPhaseDistortionOscillatorParameterRampTime
+    AKPhaseDistortionOscillatorParameterRampDuration
 };
 
 #import "AKLinearParameterRamp.hpp"  // have to put this here to get it included in umbrella header
@@ -60,7 +60,7 @@ public:
     }
 
     /** Uses the ParameterAddress as a key */
-    void setParameter(uint64_t address, float value, bool immediate) override {
+    void setParameter(AUParameterAddress address, float value, bool immediate) override {
         switch (address) {
             case AKPhaseDistortionOscillatorParameterFrequency:
                 frequencyRamp.setTarget(value, immediate);
@@ -77,18 +77,18 @@ public:
             case AKPhaseDistortionOscillatorParameterDetuningMultiplier:
                 detuningMultiplierRamp.setTarget(value, immediate);
                 break;
-            case AKPhaseDistortionOscillatorParameterRampTime:
-                frequencyRamp.setRampTime(value, _sampleRate);
-                amplitudeRamp.setRampTime(value, _sampleRate);
-                phaseDistortionRamp.setRampTime(value, _sampleRate);
-                detuningOffsetRamp.setRampTime(value, _sampleRate);
-                detuningMultiplierRamp.setRampTime(value, _sampleRate);
+            case AKPhaseDistortionOscillatorParameterRampDuration:
+                frequencyRamp.setRampDuration(value, _sampleRate);
+                amplitudeRamp.setRampDuration(value, _sampleRate);
+                phaseDistortionRamp.setRampDuration(value, _sampleRate);
+                detuningOffsetRamp.setRampDuration(value, _sampleRate);
+                detuningMultiplierRamp.setRampDuration(value, _sampleRate);
                 break;
         }
     }
 
     /** Uses the ParameterAddress as a key */
-    float getParameter(uint64_t address) override {
+    float getParameter(AUParameterAddress address) override {
         switch (address) {
             case AKPhaseDistortionOscillatorParameterFrequency:
                 return frequencyRamp.getTarget();
@@ -100,15 +100,16 @@ public:
                 return detuningOffsetRamp.getTarget();
             case AKPhaseDistortionOscillatorParameterDetuningMultiplier:
                 return detuningMultiplierRamp.getTarget();
-            case AKPhaseDistortionOscillatorParameterRampTime:
-                return frequencyRamp.getRampTime(_sampleRate);
+            case AKPhaseDistortionOscillatorParameterRampDuration:
+                return frequencyRamp.getRampDuration(_sampleRate);
         }
         return 0;
     }
 
     void init(int _channels, double _sampleRate) override {
         AKSoundpipeDSPBase::init(_channels, _sampleRate);
-
+        _playing = false;
+        
         sp_pdhalf_create(&_pdhalf);
         sp_tabread_create(&_tab);
         sp_tabread_init(_sp, _tab, _ftbl, 1);
@@ -140,7 +141,7 @@ public:
         for (int frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
             int frameOffset = int(frameIndex + bufferOffset);
 
-            // do gain ramping every 8 samples
+            // do ramping every 8 samples
             if ((frameOffset & 0x7) == 0) {
                 frequencyRamp.advanceTo(_now + frameOffset);
                 amplitudeRamp.advanceTo(_now + frameOffset);

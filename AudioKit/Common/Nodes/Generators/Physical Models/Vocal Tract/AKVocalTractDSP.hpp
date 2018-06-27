@@ -8,15 +8,15 @@
 
 #pragma once
 
-#import <Foundation/Foundation.h>
+#import <AVFoundation/AVFoundation.h>
 
-typedef NS_ENUM(int64_t, AKVocalTractParameter) {
+typedef NS_ENUM(AUParameterAddress, AKVocalTractParameter) {
     AKVocalTractParameterFrequency,
     AKVocalTractParameterTonguePosition,
     AKVocalTractParameterTongueDiameter,
     AKVocalTractParameterTenseness,
     AKVocalTractParameterNasality,
-    AKVocalTractParameterRampTime
+    AKVocalTractParameterRampDuration
 };
 
 #import "AKLinearParameterRamp.hpp"  // have to put this here to get it included in umbrella header
@@ -55,7 +55,7 @@ public:
     }
 
     /** Uses the ParameterAddress as a key */
-    void setParameter(uint64_t address, float value, bool immediate) override {
+    void setParameter(AUParameterAddress address, float value, bool immediate) override {
         switch (address) {
             case AKVocalTractParameterFrequency:
                 frequencyRamp.setTarget(value, immediate);
@@ -72,18 +72,18 @@ public:
             case AKVocalTractParameterNasality:
                 nasalityRamp.setTarget(value, immediate);
                 break;
-            case AKVocalTractParameterRampTime:
-                frequencyRamp.setRampTime(value, _sampleRate);
-                tonguePositionRamp.setRampTime(value, _sampleRate);
-                tongueDiameterRamp.setRampTime(value, _sampleRate);
-                tensenessRamp.setRampTime(value, _sampleRate);
-                nasalityRamp.setRampTime(value, _sampleRate);
+            case AKVocalTractParameterRampDuration:
+                frequencyRamp.setRampDuration(value, _sampleRate);
+                tonguePositionRamp.setRampDuration(value, _sampleRate);
+                tongueDiameterRamp.setRampDuration(value, _sampleRate);
+                tensenessRamp.setRampDuration(value, _sampleRate);
+                nasalityRamp.setRampDuration(value, _sampleRate);
                 break;
         }
     }
 
     /** Uses the ParameterAddress as a key */
-    float getParameter(uint64_t address) override {
+    float getParameter(AUParameterAddress address) override {
         switch (address) {
             case AKVocalTractParameterFrequency:
                 return frequencyRamp.getTarget();
@@ -95,8 +95,8 @@ public:
                 return tensenessRamp.getTarget();
             case AKVocalTractParameterNasality:
                 return nasalityRamp.getTarget();
-            case AKVocalTractParameterRampTime:
-                return frequencyRamp.getRampTime(_sampleRate);
+            case AKVocalTractParameterRampDuration:
+                return frequencyRamp.getRampDuration(_sampleRate);
         }
         return 0;
     }
@@ -124,7 +124,7 @@ public:
         for (int frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
             int frameOffset = int(frameIndex + bufferOffset);
 
-            // do gain ramping every 8 samples
+            // do ramping every 8 samples
             if ((frameOffset & 0x7) == 0) {
                 frequencyRamp.advanceTo(_now + frameOffset);
                 tonguePositionRamp.advanceTo(_now + frameOffset);

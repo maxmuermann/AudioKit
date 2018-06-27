@@ -15,22 +15,33 @@ open class AKBandRejectButterworthFilter: AKNode, AKToggleable, AKComponent, AKI
     public static let ComponentDescription = AudioComponentDescription(effect: "btbr")
 
     // MARK: - Properties
-
     private var internalAU: AKAudioUnitType?
     private var token: AUParameterObserverToken?
 
     fileprivate var centerFrequencyParameter: AUParameter?
     fileprivate var bandwidthParameter: AUParameter?
 
-    /// Ramp Time represents the speed at which parameters are allowed to change
-    @objc open dynamic var rampTime: Double = AKSettings.rampTime {
+    /// Lower and upper bounds for Center Frequency
+    public static let centerFrequencyRange = 12.0 ... 20_000.0
+
+    /// Lower and upper bounds for Bandwidth
+    public static let bandwidthRange = 0.0 ... 20_000.0
+
+    /// Initial value for Center Frequency
+    public static let defaultCenterFrequency = 3_000.0
+
+    /// Initial value for Bandwidth
+    public static let defaultBandwidth = 2_000.0
+
+    /// Ramp Duration represents the speed at which parameters are allowed to change
+    @objc open dynamic var rampDuration: Double = AKSettings.rampDuration {
         willSet {
-            internalAU?.rampTime = newValue
+            internalAU?.rampDuration = newValue
         }
     }
 
     /// Center frequency. (in Hertz)
-    @objc open dynamic var centerFrequency: Double = 3_000.0 {
+    @objc open dynamic var centerFrequency: Double = defaultCenterFrequency {
         willSet {
             if centerFrequency == newValue {
                 return
@@ -46,7 +57,7 @@ open class AKBandRejectButterworthFilter: AKNode, AKToggleable, AKComponent, AKI
     }
 
     /// Bandwidth. (in Hertz)
-    @objc open dynamic var bandwidth: Double = 2_000.0 {
+    @objc open dynamic var bandwidth: Double = defaultBandwidth {
         willSet {
             if bandwidth == newValue {
                 return
@@ -77,8 +88,9 @@ open class AKBandRejectButterworthFilter: AKNode, AKToggleable, AKComponent, AKI
     ///
     @objc public init(
         _ input: AKNode? = nil,
-        centerFrequency: Double = 3_000.0,
-        bandwidth: Double = 2_000.0) {
+        centerFrequency: Double = defaultCenterFrequency,
+        bandwidth: Double = defaultBandwidth
+        ) {
 
         self.centerFrequency = centerFrequency
         self.bandwidth = bandwidth

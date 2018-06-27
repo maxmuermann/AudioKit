@@ -3,7 +3,7 @@
 //  AudioKitUI
 //
 //  Created by Aurelius Prochazka, revision history on Github.
-//  Copyright © 2017 AudioKit. All rights reserved.
+//  Copyright © 2018 AudioKit. All rights reserved.
 //
 
 extension Notification.Name {
@@ -40,14 +40,12 @@ open class AKNodeOutputPlot: EZAudioPlot {
 
     // Useful to reconnect after connecting to Audiobus or IAA
     @objc func reconnect() {
-        node?.avAudioNode.removeTap(onBus: 0)
-        setupNode(node)
+        pause()
+        resume()
     }
 
     @objc open func pause() {
-        AKLog("is Cnonect", isConnected)
         if isConnected {
-            AKLog("REMOVING TAP")
             node?.avAudioNode.removeTap(onBus: 0)
             isConnected = false
         }
@@ -73,10 +71,10 @@ open class AKNodeOutputPlot: EZAudioPlot {
     /// The node whose output to graph
     @objc open var node: AKNode? {
         willSet {
-            node?.avAudioNode.removeTap(onBus: 0)
+            pause()
         }
         didSet {
-            setupNode(node)
+            resume()
         }
     }
 
@@ -102,7 +100,6 @@ open class AKNodeOutputPlot: EZAudioPlot {
     ///   - height: Height of the view
     ///
     @objc public init(_ input: AKNode? = AudioKit.output, frame: CGRect, bufferSize: Int = 1_024) {
-        Swift.print("Got in here")
         super.init(frame: frame)
         self.plotType = .buffer
         self.backgroundColor = AKColor.white
@@ -110,6 +107,7 @@ open class AKNodeOutputPlot: EZAudioPlot {
         self.bufferSize = UInt32(bufferSize)
 
         setupNode(input)
+        self.node = input
         setupReconnection()
     }
 }

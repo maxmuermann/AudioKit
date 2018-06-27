@@ -3,7 +3,7 @@
 //  AudioKit
 //
 //  Created by Aurelius Prochazka, Laurent Veliscek & Ryan Francesconi, revision history on Github.
-//  Copyright © 2017 AudioKit. All rights reserved.
+//  Copyright © 2018 AudioKit. All rights reserved.
 //
 
 /// Not so simple audio playback class
@@ -645,7 +645,7 @@ open class AKAudioPlayer: AKNode, AKToggleable {
         // from -20db?
         let fadeInPower: Double = exp(log(10) * sampleTime / inTime)
 
-        // for decay to x% amplitude (-dB) over the given decay time
+        // for decay to x% amplitude (-dB) over the given decay duration
         let fadeOutPower: Double = exp(-log(25) * sampleTime / outTime)
 
         // where in the buffer to end the fade in

@@ -8,12 +8,12 @@
 
 #pragma once
 
-#import <Foundation/Foundation.h>
+#import <AVFoundation/AVFoundation.h>
 
-typedef NS_ENUM(int64_t, AKPluckedStringParameter) {
+typedef NS_ENUM(AUParameterAddress, AKPluckedStringParameter) {
     AKPluckedStringParameterFrequency,
     AKPluckedStringParameterAmplitude,
-    AKPluckedStringParameterRampTime
+    AKPluckedStringParameterRampDuration
 };
 
 #import "AKLinearParameterRamp.hpp"  // have to put this here to get it included in umbrella header
@@ -43,7 +43,7 @@ public:
     }
 
     /** Uses the ParameterAddress as a key */
-    void setParameter(uint64_t address, float value, bool immediate) override {
+    void setParameter(AUParameterAddress address, float value, bool immediate) override {
         switch (address) {
             case AKPluckedStringParameterFrequency:
                 frequencyRamp.setTarget(value, immediate);
@@ -51,22 +51,22 @@ public:
             case AKPluckedStringParameterAmplitude:
                 amplitudeRamp.setTarget(value, immediate);
                 break;
-            case AKPluckedStringParameterRampTime:
-                frequencyRamp.setRampTime(value, _sampleRate);
-                amplitudeRamp.setRampTime(value, _sampleRate);
+            case AKPluckedStringParameterRampDuration:
+                frequencyRamp.setRampDuration(value, _sampleRate);
+                amplitudeRamp.setRampDuration(value, _sampleRate);
                 break;
         }
     }
 
     /** Uses the ParameterAddress as a key */
-    float getParameter(uint64_t address) override {
+    float getParameter(AUParameterAddress address) override {
         switch (address) {
             case AKPluckedStringParameterFrequency:
                 return frequencyRamp.getTarget();
             case AKPluckedStringParameterAmplitude:
                 return amplitudeRamp.getTarget();
-            case AKPluckedStringParameterRampTime:
-                return frequencyRamp.getRampTime(_sampleRate);
+            case AKPluckedStringParameterRampDuration:
+                return frequencyRamp.getRampDuration(_sampleRate);
         }
         return 0;
     }
@@ -101,7 +101,7 @@ public:
         for (int frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
             int frameOffset = int(frameIndex + bufferOffset);
 
-            // do gain ramping every 8 samples
+            // do ramping every 8 samples
             if ((frameOffset & 0x7) == 0) {
                 frequencyRamp.advanceTo(_now + frameOffset);
                 amplitudeRamp.advanceTo(_now + frameOffset);

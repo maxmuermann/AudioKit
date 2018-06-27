@@ -25,8 +25,8 @@ public class AKPluckedStringAudioUnit: AKGeneratorAudioUnitBase {
         didSet { setParameter(.amplitude, value: amplitude) }
     }
 
-    var rampTime: Double = 0.0 {
-        didSet { setParameter(.rampTime, value: rampTime) }
+    var rampDuration: Double = 0.0 {
+        didSet { setParameter(.rampDuration, value: rampDuration) }
     }
 
     public override func initDSP(withSampleRate sampleRate: Double,
@@ -34,7 +34,7 @@ public class AKPluckedStringAudioUnit: AKGeneratorAudioUnitBase {
         return createPluckedStringDSP(Int32(count), sampleRate)
     }
 
-    override init(componentDescription: AudioComponentDescription,
+    public override init(componentDescription: AudioComponentDescription,
                   options: AudioComponentInstantiationOptions = []) throws {
         try super.init(componentDescription: componentDescription, options: options)
 
@@ -45,7 +45,7 @@ public class AKPluckedStringAudioUnit: AKGeneratorAudioUnitBase {
             name: "Variable frequency. Values less than the initial frequency  will be doubled until it is greater than that.",
             address: AUParameterAddress(0),
             min: 0,
-            max: 22000,
+            max: 22_000,
             unit: .hertz,
             unitName: nil,
             flags: flags,
@@ -64,12 +64,12 @@ public class AKPluckedStringAudioUnit: AKGeneratorAudioUnitBase {
             valueStrings: nil,
             dependentParameters: nil
         )
-        
+
         setParameterTree(AUParameterTree.createTree(withChildren: [frequency, amplitude]))
         frequency.value = 110
         amplitude.value = 0.5
     }
 
-    public override var canProcessInPlace: Bool { get { return true; }}
+    public override var canProcessInPlace: Bool { return true } 
 
 }

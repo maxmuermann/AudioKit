@@ -2,7 +2,7 @@
 //  ViewController.swift
 //  MetronomeSamplerSync
 //
-//  Created by David O'Neill on 8/31/17.
+//  Created by David O'Neill, revision history on Githbub.
 //  Copyright © 2017 O'Neill. All rights reserved.
 //
 
@@ -30,8 +30,11 @@ class ViewController: UIViewController {
         metronome1 >>> mixer
         metronome2 >>> mixer
         AudioKit.output = mixer
-        AudioKit.start()
-
+        do {
+            try AudioKit.start()
+        } catch {
+            AKLog("AudioKit did not start!")
+        }
         setUpUI()
     }
 
@@ -103,8 +106,8 @@ class ViewController: UIViewController {
                          frame: CGRect(),
                          callback: { [weak self] volume in
 
-                            self?.metronome1.downBeatVolume = Float(volume);
-                            self?.metronome2.downBeatVolume = Float(volume);
+                            self?.metronome1.downBeatVolume = Float(volume)
+                            self?.metronome2.downBeatVolume = Float(volume)
 
         }))
 
@@ -117,12 +120,12 @@ class ViewController: UIViewController {
                          frame: CGRect(),
                          callback: { [weak self] volume in
 
-                            self?.metronome1.beatVolume = Float(volume);
-                            self?.metronome2.beatVolume = Float(volume);
+                            self?.metronome1.beatVolume = Float(volume)
+                            self?.metronome2.beatVolume = Float(volume)
 
         }))
 
-        let beatsSelector = UISegmentedControl(items: Array(1...8).map {String($0)})
+        let beatsSelector = UISegmentedControl(items: Array(1...8).map { String($0) })
         beatsSelector.addTarget(self, action: #selector(beatsSelected(segmentedControl:)), for: .valueChanged)
         beatsSelector.selectedSegmentIndex = 3
         addView(beatsSelector)

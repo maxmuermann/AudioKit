@@ -2,8 +2,8 @@
 //  AKBoosterAudioUnit.swift
 //  AudioKit
 //
-//  Created by Andrew Voelkel on 9/23/17.
-//  Copyright © 2017 AudioKit. All rights reserved.
+//  Created by Aurelius Prochazka, revision history on Github.
+//  Copyright © 2018 AudioKit. All rights reserved.
 //
 
 import AVFoundation
@@ -26,8 +26,14 @@ public class AKBoosterAudioUnit: AKAudioUnitBase {
         didSet { setParameter(.rightGain, value: rightGain) }
     }
 
-    var rampTime: Double = 0.0 {
-        didSet { setParameter(.rampTime, value: rampTime) }
+    var rampDuration: Double = 0.0 {
+        didSet { setParameter(.rampDuration, value: rampDuration) }
+    }
+
+    var rampType: Int = 0 {
+        didSet {
+            setParameter(.rampType, value: Double(rampType))
+        }
     }
 
     public override func initDSP(withSampleRate sampleRate: Double,
@@ -35,7 +41,7 @@ public class AKBoosterAudioUnit: AKAudioUnitBase {
         return createBoosterDSP(Int32(count), sampleRate)
     }
 
-    override init(componentDescription: AudioComponentDescription,
+    public override init(componentDescription: AudioComponentDescription,
                   options: AudioComponentInstantiationOptions = []) throws {
         try super.init(componentDescription: componentDescription, options: options)
 
@@ -59,6 +65,6 @@ public class AKBoosterAudioUnit: AKAudioUnitBase {
         rightGain.value = 1.0
     }
 
-    public override var canProcessInPlace: Bool { get { return true; }}
+    public override var canProcessInPlace: Bool { return true }
 
 }
