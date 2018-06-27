@@ -2,8 +2,8 @@
 //  AppDelegate.swift
 //  AudioUnitManager
 //
-//  Created by Ryan Francesconi on 7/14/17.
-//  Copyright © 2017 AudioKit. All rights reserved.
+//  Created by Ryan Francesconi, revision history on Githbub.
+//  Copyright © 2018 AudioKit. All rights reserved.
 //
 
 import Cocoa
@@ -13,6 +13,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // Insert code here to initialize your application
+
+        NotificationCenter.default.post(name: Notification.Name("AudioUnitManager.handleApplicationInit"), object: nil)
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {

@@ -3,7 +3,7 @@
 //  AudioKit
 //
 //  Created by Aurelius Prochazka, revision history on Github.
-//  Copyright © 2017 Aurelius Prochazka. All rights reserved.
+//  Copyright © 2018 AudioKit. All rights reserved.
 //
 
 import AudioToolbox
@@ -15,7 +15,13 @@ public typealias MIDINoteNumber = UInt8
 public typealias MIDIVelocity = UInt8
 public typealias MIDIChannel = UInt8
 
-extension Collection where IndexDistance == Int {
+/// A Sample type, just a UInt32
+public typealias Sample = UInt32
+
+/// Callback function that can be called from C
+public typealias AKCCallback = @convention(block) () -> Void
+
+extension Collection {
     /// Return a random element from the collection
     public var randomIndex: Index {
         let offset = Int(arc4random_uniform(UInt32(Int64(count))))
@@ -42,14 +48,22 @@ public func fourCC(_ string: String) -> UInt32 {
     return out
 }
 
-/// Wrapper for printing out status messages to the console, 
+/// Wrapper for printing out status messages to the console,
 /// eventually it could be expanded with log levels
-/// - parameter string: Message to print
+/// - items: Zero or more items to print.
 ///
 @inline(__always)
-public func AKLog(_ string: String, fname: String = #function) {
+public func AKLog(fullname: String = #function, file: String = #file, line: Int = #line, _ items: Any...) {
     if AKSettings.enableLogging {
-        print(fname, string)
+        let fileName = (file as NSString).lastPathComponent
+        var content = ""
+        for i in 0 ..< items.count {
+            content += String(describing: items[i])
+            if i < items.count - 1 {
+                content += " "
+            }
+        }
+        Swift.print("\(fileName):\(fullname):\(line):\(content)")
     }
 }
 

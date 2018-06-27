@@ -2,14 +2,27 @@
 //  AKClipRecorder.swift
 //  AudioKit
 //
-//  Created by David O'Neill on 5/8/17.
+//  Created by David O'Neill, revision history on GitHub.
 //  Copyright © 2017 Audive Inc. All rights reserved.
 //
 
-/// A closure that will be called when the clip is finished recording. If
-/// successful URL will be non-nil. If recording failed, Error will be non nil.  The actual
-/// start time is included and should be checked in case it was adjusted.
-public typealias AKRecordingResult = (URL?, Double, Error?) -> Void
+/// A closure that will be called when the clip is finished recording.
+/// Result will be an error or a clip. ClipRecording.url is the location
+/// of the recording in the temporary diretory, it should be moved or copied
+/// from this location within this closure, it will be deleted after.
+/// startTime and duration may be different than parameters given in recordClip().
+///
+public typealias ClipRecordingCompletion = (ClipRecordingResult) -> Void
+
+public struct ClipRecording {
+    public let url: URL
+    public let startTime: Double
+    public let duration: Double
+}
+public enum ClipRecordingResult {
+    case clip(ClipRecording)
+    case error(Error)
+}
 
 open class AKClipRecorder {
 
@@ -21,7 +34,7 @@ open class AKClipRecorder {
     ///
     /// - Parameter node: The node that audio will be recorded from
     ///
-    public init(node: AKOutput) {
+    @objc public init(node: AKOutput) {
         self.node = node
         timing = AKNodeTiming(node: node)
         node.outputNode.installTap(onBus: 0, bufferSize: 256, format: nil, block: self.audioTap)
@@ -31,22 +44,22 @@ open class AKClipRecorder {
     }
 
     /// Starts the internal timeline.
-    open func play() {
-        play(at: nil)
+    open func start() {
+        start(at: nil)
     }
 
     /// Starts the internal timeline from audioTime.
     ///
     /// - Parameter audioTime: An time in the audio render context.
     ///
-    open func play(at audioTime: AVAudioTime?) {
-        if isPlaying {
+    open func start(at audioTime: AVAudioTime?) {
+        if isStarted {
             return
         }
         for clip in clips where clip.endTime <= timing.currentTime {
             finalize(clip: clip, error: ClipRecordingError.timingError)
         }
-        timing.play(at: audioTime)
+        timing.start(at: audioTime)
     }
 
     /// The current time of the internal timeline.  Setting will call stop().
@@ -62,7 +75,7 @@ open class AKClipRecorder {
     /// - Parameter completion: a closure that will be called after all clips have benn finalized.
     ///
     open func stop(_ completion: (() -> Void)? = nil) {
-        if !isPlaying {
+        if !isStarted {
             return
         }
         timing.stop()
@@ -97,23 +110,18 @@ open class AKClipRecorder {
         for clip in clips {
             group.enter()
             clip.endTime = clipEndTime
-            clip.completion = doAfter(result: clip.completion, action: {
+            clip.completion = doAfter(completion: clip.completion, action: {
                 group.leave()
             })
         }
         group.notify(queue: DispatchQueue.main, execute: completion)
     }
-    private func doAfter(result: @escaping AKRecordingResult,
-                         action: @escaping () -> Void) -> AKRecordingResult {
-        return { (url, time, error) in
-            result(url, time, error)
+    private func doAfter(completion: @escaping ClipRecordingCompletion,
+                         action: @escaping () -> Void) -> ClipRecordingCompletion {
+        return { result in
+            completion(result)
             action()
         }
-    }
-
-    /// Is inner timeline playing.
-    open var isPlaying: Bool {
-        return timing.isPlaying
     }
 
     /// True if there are any clips recording.
@@ -123,7 +131,7 @@ open class AKClipRecorder {
 
     /// Schedule an audio clip to record.
     ///
-    /// Clips are recorded to an audio file in the tmp directory, they are accessed when the 
+    /// Clips are recorded to an audio file in the tmp directory, they are accessed when the
     /// completeion block is called, if no error.
     ///
     /// - Parameters
@@ -132,14 +140,12 @@ open class AKClipRecorder {
     ///   - duration: The duration in seconds of the clip to record, will be adjusted if start time
     /// was adjusted.
     ///   - tap: An optional tap to access audio as it's being recorded.
-    ///   - completion: A closure that will be called when the clip is finished recording. If
-    /// successful URL will be non-nil. If recording failed, Error will be non nil.  The actual
-    /// start time is included and should be checked in case it was adjusted.
+    ///   - completion: A closure that will be called when the clip is finished recording. time and duration may be different in the result.
     ///
     public func recordClip(time: Double = 0,
                            duration: Double = Double.greatestFiniteMagnitude,
                            tap: AVAudioNodeTapBlock? = nil,
-                           completion: @escaping AKRecordingResult) throws {
+                           completion: @escaping ClipRecordingCompletion) throws {
 
         guard time >= 0, duration > 0, time + duration > timing.currentTime else {
             throw ClipRecordingError.invalidParameters
@@ -158,7 +164,7 @@ open class AKClipRecorder {
         }
 
         guard let audioFile = clip.audioFile, audioFile.length > 0 else {
-            clip.completion(nil, 0, error ?? ClipRecordingError.clipIsEmpty)
+            clip.completion(ClipRecordingResult.error(error ?? ClipRecordingError.clipIsEmpty))
             completion?()
             return
         }
@@ -168,36 +174,41 @@ open class AKClipRecorder {
         if clip.audioTimeStart != nil,
             let audioFile = clip.audioFile,
             audioFile.length > 0 {
+            let duration = audioFile.duration
             clip.audioFile = nil
-            clip.completion(url, clip.startTime, error)
+            clip.completion(ClipRecordingResult.clip(ClipRecording(url: url, startTime: clip.startTime, duration: duration)))
             completion?()
         } else {
-            clip.completion(nil, 0, error ?? ClipRecordingError.timingError)
+            clip.completion(ClipRecordingResult.error(error ?? ClipRecordingError.timingError))
             completion?()
         }
         if FileManager.default.fileExists(atPath: url.path) {
             do {
                 try FileManager.default.removeItem(atPath: url.path)
             } catch let error {
-                print(error)
+                AKLog(error)
             }
         }
     }
 
     // Audio tap that is set on node.
     private func audioTap(buffer: AVAudioPCMBuffer, audioTime: AVAudioTime) {
-        if !timing.isPlaying {
+        if !timing.isStarted {
             return
         }
-        let timeIn = timing.time(atAudioTime: audioTime)
+        let timeIn = timing.position(at: audioTime)
         let timeOut = timeIn + Double(buffer.frameLength) / buffer.format.sampleRate
         for clip in clips {
             if clip.startTime < timeOut && clip.endTime > timeIn {
                 var adjustedBuffer = buffer
                 var adjustedAudioTme = audioTime
                 if clip.audioTimeStart == nil {
+                    print("clip.startTime \(clip.startTime)")
+                    print("timeIn \(timeIn)")
                     clip.startTime = max(clip.startTime, timeIn)
-                    guard let audioTimeStart = timing.audioTime(atTime: clip.startTime) else {
+                    print("= ip.startTime \(clip.startTime)")
+
+                    guard let audioTimeStart = timing.audioTime(at: clip.startTime) else {
                         finalize(clip: clip, error: ClipRecordingError.timingError)
                         continue
                     }
@@ -213,7 +224,7 @@ open class AKClipRecorder {
                 if lastBuffer {
                     let timeLeft = clip.endTime - timeIn
                     let samplesLeft = AVAudioFrameCount(timeLeft * buffer.format.sampleRate)
-                    if let partial = buffer.copyTo(endSample: samplesLeft) {
+                    if let partial = buffer.copyTo(count: samplesLeft) {
                         adjustedBuffer = partial
                     }
                 }
@@ -230,6 +241,29 @@ open class AKClipRecorder {
         }
     }
 
+}
+
+extension AKClipRecorder: AKTiming {
+
+    public var isStarted: Bool {
+        return timing.isStarted
+    }
+
+    public func stop() {
+        stop(nil)
+    }
+
+    public func setPosition(_ position: Double) {
+        timing.setPosition(position)
+    }
+
+    public func position(at audioTime: AVAudioTime?) -> Double {
+        return timing.position(at: audioTime)
+    }
+
+    public func audioTime(at position: Double) -> AVAudioTime? {
+        return timing.audioTime(at: position)
+    }
 }
 
 public enum ClipRecordingError: Error, LocalizedError {
@@ -257,22 +291,22 @@ private class AKClipRecording: Equatable {
     var endTime: Double
     var audioTimeStart: AVAudioTime?
     var audioFile: AKAudioFile?
-    var completion: AKRecordingResult
+    var completion: ClipRecordingCompletion
     var tap: AVAudioNodeTapBlock?
     init(start: Double = 0,
          end: Double = Double.greatestFiniteMagnitude,
          audioFile: AKAudioFile? = nil,
-         completion: @escaping AKRecordingResult) {
+         completion: @escaping ClipRecordingCompletion) {
 
         startTime = start
         endTime = end
         var called = false
-        self.completion = { (url: URL?, actualStart: Double, error: Error?) in
+        self.completion = { result in
             if called {
                 return
             }
             called = true
-            completion(url, actualStart, error)
+            completion(result)
         }
         self.audioFile = audioFile
     }
@@ -281,7 +315,7 @@ private class AKClipRecording: Equatable {
             let tmp = URL(fileURLWithPath: NSTemporaryDirectory())
             let url = tmp.appendingPathComponent(UUID().uuidString).appendingPathExtension("caf").standardizedFileURL
             guard let fileFormat = AVAudioFormat(commonFormat: .pcmFormatInt16,
-                                           sampleRate: AudioKit.format.sampleRate,
+                                           sampleRate: buffer.format.sampleRate,
                                            channels: buffer.format.channelCount,
                                            interleaved: true) else {
                                             throw ClipRecordingError.formatError
@@ -291,10 +325,8 @@ private class AKClipRecording: Equatable {
                                         commonFormat: buffer.format.commonFormat,
                                         interleaved: buffer.format.isInterleaved)
         }
+        tap?(buffer, audioTime)
         try audioFile?.write(from: buffer)
-        if let tap = self.tap {
-            tap(buffer, audioTime)
-        }
     }
     static public func == (a: AKClipRecording, b: AKClipRecording) -> Bool {
         return a === b

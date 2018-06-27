@@ -3,14 +3,14 @@
 //  AudioKit
 //
 //  Created by Aurelius Prochazka, revision history on Github.
-//  Copyright © 2017 Aurelius Prochazka. All rights reserved.
+//  Copyright © 2018 AudioKit. All rights reserved.
 //
 
 /// STK TubularBells
 ///
 open class AKTubularBells: AKNode, AKToggleable, AKComponent {
     /// Four letter unique description of the node
-    public static let ComponentDescription = AudioComponentDescription(generator: "rhod")
+    public static let ComponentDescription = AudioComponentDescription(generator: "tbel")
     public typealias AKAudioUnitType = AKTubularBellsAudioUnit
     // MARK: - Properties
 
@@ -20,10 +20,10 @@ open class AKTubularBells: AKNode, AKToggleable, AKComponent {
     fileprivate var frequencyParameter: AUParameter?
     fileprivate var amplitudeParameter: AUParameter?
 
-    /// Ramp Time represents the speed at which parameters are allowed to change
-    @objc open dynamic var rampTime: Double = AKSettings.rampTime {
+    /// Ramp Duration represents the speed at which parameters are allowed to change
+    @objc open dynamic var rampDuration: Double = AKSettings.rampDuration {
         willSet {
-            internalAU?.rampTime = newValue
+            internalAU?.rampDuration = newValue
         }
     }
 
@@ -51,7 +51,7 @@ open class AKTubularBells: AKNode, AKToggleable, AKComponent {
 
     /// Tells whether the node is processing (ie. started, playing, or active)
     @objc open dynamic var isStarted: Bool {
-        return internalAU?.isPlaying() ?? false
+        return internalAU?.isPlaying ?? false
     }
 
     // MARK: - Initialization
@@ -68,7 +68,7 @@ open class AKTubularBells: AKNode, AKToggleable, AKComponent {
     ///                greater than that.
     ///   - amplitude: Amplitude
     ///
-    public init(
+    @objc public init(
         frequency: Double = 440,
         amplitude: Double = 0.5) {
 

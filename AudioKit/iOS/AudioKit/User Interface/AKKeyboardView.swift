@@ -3,12 +3,12 @@
 //  AudioKit
 //
 //  Created by Aurelius Prochazka, revision history on Github.
-//  Copyright © 2017 Aurelius Prochazka. All rights reserved.
+//  Copyright © 2018 AudioKit. All rights reserved.
 //
 import UIKit
 
 /// Delegate for keyboard events
-public protocol AKKeyboardDelegate: class {
+@objc public protocol AKKeyboardDelegate: class {
     /// Note on evenets
     func noteOn(note: MIDINoteNumber)
     /// Note off events
@@ -21,7 +21,7 @@ public protocol AKKeyboardDelegate: class {
     /// Number of octaves displayed at once
     @IBInspectable open var octaveCount: Int = 2
 
-    /// Lowest octave dispayed
+    /// Lowest octave displayed
     @IBInspectable open var firstOctave: Int = 4
 
     /// Relative measure of the height of the black keys
@@ -47,7 +47,7 @@ public protocol AKKeyboardDelegate: class {
     var onKeys = Set<MIDINoteNumber>()
 
     /// Allows multiple notes to play concurrently
-    open var polyphonicMode = false {
+    @objc open var polyphonicMode = false {
         didSet {
             for note in onKeys {
                 delegate?.noteOff(note: note)
@@ -58,7 +58,7 @@ public protocol AKKeyboardDelegate: class {
     }
 
     let baseMIDINote = 24 // MIDINote 24 is C0
-    
+
     let naturalNotes = ["C", "D", "E", "F", "G", "A", "B"]
     let notesWithSharps = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
     let topKeyNotes = [0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 11]
@@ -72,14 +72,17 @@ public protocol AKKeyboardDelegate: class {
     // MARK: - Initialization
 
     /// Initialize the keyboard with default info
-    public override init(frame: CGRect) {
+    @objc public override init(frame: CGRect) {
         super.init(frame: frame)
         isMultipleTouchEnabled = true
     }
 
     /// Initialize the keyboard
-    public init(width: Int, height: Int, firstOctave: Int = 4, octaveCount: Int = 3,
-                polyphonic: Bool = false) {
+    @objc public init(width: Int,
+                      height: Int,
+                      firstOctave: Int = 4,
+                      octaveCount: Int = 3,
+                      polyphonic: Bool = false) {
         self.octaveCount = octaveCount
         self.firstOctave = firstOctave
         super.init(frame: CGRect(x: 0, y: 0, width: width, height: height))
@@ -264,10 +267,10 @@ public protocol AKKeyboardDelegate: class {
             if let key = noteFromTouchLocation(touch.location(in: self)),
                 key != noteFromTouchLocation(touch.previousLocation(in: self)) {
                 pressAdded(key)
+                setNeedsDisplay()
             }
         }
         verifyTouches(event?.allTouches)
-        setNeedsDisplay()
     }
 
     /// Handle stopped touches
