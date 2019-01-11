@@ -9,6 +9,7 @@
 import UIKit
 import UIKit.UIGestureRecognizerSubclass
 
+
 /// Extension of `UIGestureRecognizerDelegate` which allows the delegate to receive messages relating to
 /// individual touches. The `delegate` property can be set to a class
 /// implementing `MultitouchGestureRecognizerDelegate` and it will receive these messages.
@@ -85,7 +86,7 @@ open class MultitouchGestureRecognizer: UIGestureRecognizer {
     public lazy private(set) var touches = [UITouch]()
 
     /// The current gesture recognizer state, as it pertains to the `sustain` setting.
-    public enum State {
+    public enum AKMTState {
 
         /// All touches are ended, and none are being sustained.
         case ready
@@ -99,7 +100,7 @@ open class MultitouchGestureRecognizer: UIGestureRecognizer {
     }
 
     /// The current multitouch gesture recognizer state.
-    public var multitouchState: State {
+    public var multitouchState: AKMTState {
         if touches.isEmpty {
             return .ready
         } else if touches.filter({ $0.phase != .ended }).isNotEmpty {
